@@ -1,39 +1,40 @@
 # OurSky
 
-Interfaccia web per organizzare l’astrofotografia amatoriale.
+Atlante e pianificatore italiano per l’astrofotografia amatoriale. App statica, mobile-first, senza dipendenze runtime.
 
-## Avvio locale
-
-Il prototipo è statico e non richiede installazione di dipendenze:
+## Avvio e verifica
 
 ```bash
 python3 -m http.server 4173
 ```
 
-Apri `http://localhost:4173`.
+Apri `http://localhost:4173`. Verifica sintattica: `npm run check`.
+
+## Funzioni presenti
+
+- Panoramica del sito attivo, progetti, setup e soggetti in stagione.
+- Atlante offline con 12.036 oggetti NGC/IC estratti da OpenNGC, più 33 schede curate Messier, Sharpless e altri target. Ricerca, filtri per classe/stagione e schede con coordinate J2000, dimensioni, magnitudine, campo, scienza e storia.
+- Gear composto da telescopio, camera, filtri e accessori. Include suggerimenti per modelli comuni e inserimento custom; FOV, diagonale e scala pixel vengono calcolati quando i dati ottici e del sensore sono noti.
+- Più località, ricerca geocodificata OpenStreetMap/Nominatim, previsione Open-Meteo, link centrato alla mappa Light Pollution Map e campi Bortle/SQM modificabili.
+- Progetti con obiettivo, setup, località, ore, soglia lunare, altezza e nuvolosità; checklist, scheda esportabile e calendario lunare locale.
+- Dati profilo e checklist salvati in `localStorage` sul dispositivo.
+
+## Fonti e limiti delle integrazioni
+
+- Catalogo: estratto OpenNGC, licenza CC BY-SA 4.0. Attribuzione e provenienza in `src/data/OPENNGC-ATTRIBUTION.md`.
+- Meteo: Open-Meteo. Luoghi: OpenStreetMap Nominatim. Mappa dell’inquinamento luminoso: collegamento a Light Pollution Map.
+- Le schede curate contengono pillole introduttive; i record importati mostrano metadati catalografici e una descrizione derivata dai dati, non una biografia enciclopedica individuale.
+- Le finestre stagionali sono una stima basata su ascensione retta; l’altezza massima è geometrica. Non include ostacoli locali, rifrazione o precisione di un planetario.
+- AstroBin apre una ricerca per oggetto; per mostrare immagini, attribuzioni e metadati direttamente nell’app serve una chiave API AstroBin.
+- Il catalogo camera/telescopio è un set iniziale di modelli frequenti con campi editabili, non un database completo del mercato.
+- Non è ancora collegato il controllo diretto di APT, N.I.N.A., ASCOM/INDI o altro software di acquisizione.
 
 ## Struttura
 
 ```text
-public/                  asset statici
-src/
-  components/            elementi condivisi
-  data/                  cataloghi astronomici e attrezzatura
-  features/
-    catalog/             oggetti e mappa del cielo
-    gear/                configurazioni e calcoli ottici
-    planner/             progetti e calendario sessioni
-    sites/               località e qualità del cielo
-  pages/                 viste principali
-  scripts/               bootstrap e interazioni
-  styles/                token, layout e componenti visuali
-docs/                    note architetturali e fonti dati
-```
-
-La prima schermata usa HTML, CSS e JavaScript nativi, senza dipendenze. Le cartelle delle funzionalità sono già predisposte e descritte in `docs/architecture.md`.
-
-## Verifica
-
-```bash
-node --check src/scripts/main.js
+index.html
+public/                  icona
+src/data/                catalogo compresso e attribuzione
+src/scripts/main.js      app, calcoli, UI e integrazioni web
+src/styles/              token e componenti responsive
 ```
