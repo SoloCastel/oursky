@@ -1,41 +1,40 @@
 # OurSky
 
-Atlante e pianificatore italiano per l’astrofotografia amatoriale. App statica, mobile-first, senza dipendenze runtime.
+OurSky è un atlante e un pianificatore in italiano per l'astrofotografia amatoriale. Interfaccia mobile-first, app statica e profilo salvato nel browser.
 
-## Avvio e verifica
+## Avvio
 
 ```bash
 python3 -m http.server 4173
 ```
 
-Apri `http://localhost:4173`. Verifica sintattica: `npm run check`.
+Apri `http://localhost:4173`. Controllo sintattico: `npm run check`.
 
-## Funzioni presenti
+## Sezioni
 
-- Panoramica del sito attivo, progetti, setup e soggetti in stagione.
-- Atlante offline con 12.036 oggetti NGC/IC estratti da OpenNGC, più una selezione curata di Messier, Sharpless e altri target. Ricerca, filtri per classe/stagione e schede con coordinate J2000, dimensioni, magnitudine, campo, scienza e storia.
-- Gear composto da telescopio, camera, filtri e accessori. Include suggerimenti per modelli comuni e inserimento custom; FOV, diagonale e scala pixel vengono calcolati quando i dati ottici e del sensore sono noti.
-- Mappa cielo orientabile con giroscopio/bussola quando il dispositivo lo consente, pan manuale, selezione dei target e geolocalizzazione attivabile dall’utente.
-- Più località, ricerca geocodificata OpenStreetMap/Nominatim, GPS, previsione Open-Meteo, link centrato alla mappa Light Pollution Map e campi Bortle/SQM modificabili.
-- Progetti con obiettivo, setup, località, ore, intervallo date, giorni preferiti, orario e soglie di luna/altezza/nuvolosità; checklist, scheda esportabile e calendario lunare locale.
-- Dati profilo e checklist salvati in `localStorage` sul dispositivo. La località iniziale è un esempio su Milano, da sostituire con GPS o ricerca del proprio sito.
+- **Stasera**: soggetto in evidenza, immagine ottica di survey DSS2, setup, sito, condizioni meteo e progetti.
+- **Soggetti**: catalogo NGC/IC locale con ricerca su sigla primaria, nomi comuni e cross-reference disponibili; filtri per classe, stagione, costellazione, dimensione, altezza geometrica e compatibilità del campo. Risultati progressivi, senza migliaia di schede caricate insieme.
+- **Attrezzatura**: oltre 200 telescopi/ottiche e più di 100 camere fra camere astronomiche e fotocamere DSLR/mirrorless. Ricerca per marca e modello, specifiche editabili, filtri e componenti custom. FOV orizzontale/verticale/diagonale e scala pixel sono calcolati da sensore, focale e correttore ottico.
+- **Località**: mappa OpenStreetMap con pin trascinabile o cliccabile, GPS, coordinate e quota da Open-Meteo, fuso orario e più siti. La classe Bortle e SQM sono registrate come dati forniti dall'utente o da una misura: non vengono dedotte da un colore della mappa.
+- **Progetti**: soggetto, setup, sito, integrazione desiderata, date, giorni disponibili e soglie per luna, altezza e nuvolosità. Le ore di integrazione sono un obiettivo impostato dall'utente, non una promessa automatica di qualità.
+- **Calendario**: fasi lunari calcolate localmente e progetti.
 
-## Fonti e limiti delle integrazioni
+## Dati, immagini e limiti
 
-- Catalogo: estratto OpenNGC, licenza CC BY-SA 4.0. Attribuzione e provenienza in `src/data/OPENNGC-ATTRIBUTION.md`.
-- Meteo: Open-Meteo. Luoghi: OpenStreetMap Nominatim. Mappa dell’inquinamento luminoso: collegamento a Light Pollution Map.
-- Le schede curate contengono pillole introduttive; i record importati mostrano metadati catalografici e una descrizione derivata dai dati, non una biografia enciclopedica individuale.
-- Le finestre stagionali sono una stima basata su ascensione retta; l’altezza massima è geometrica. Non include ostacoli locali, rifrazione o precisione di un planetario.
-- AstroBin apre una ricerca per oggetto; per mostrare immagini, attribuzioni e metadati direttamente nell’app serve una chiave API AstroBin.
-- Il catalogo camera/telescopio è un set iniziale di modelli frequenti con campi editabili, non un database completo del mercato.
-- Non è ancora collegato il controllo diretto di APT, N.I.N.A., ASCOM/INDI o altro software di acquisizione.
+- Catalogo NGC/IC: estratto locale di OpenNGC, licenza CC BY-SA 4.0. Attribuzione in `src/data/OPENNGC-ATTRIBUTION.md`. Le posizioni sono J2000; i record OpenNGC forniscono misure e identificatori/cross-reference solo quando presenti nel dataset.
+- La selezione editoriale contiene schede con pillole scientifiche e storico-culturali. Per i record catalografici generici non sono inventate storie individuali.
+- Le immagini mostrate sono ritagli DSS2 dal servizio HiPS2FITS del CDS/Università di Strasburgo. Sono immagini reali di survey astronomiche, non astrofotografie individuali: ogni scheda offre anche la ricerca AstroBin.
+- Dati meteo e quota: Open-Meteo. Ricerca e cartografia: OpenStreetMap / Nominatim / Leaflet. La mappa Light Pollution Map si apre centrata sul sito; Bortle/SQM non vengono falsamente presentate come letture automatiche.
+- Gli elenchi gear sono una selezione locale estesa di modelli reali; ogni riga espone il sito di riferimento della marca e i campi restano modificabili per varianti e correttori. Prima della sessione controlla le specifiche della revisione esatta del tuo strumento.
+- Stagionalità e culminazione sono calcoli geometrici di supporto; non sostituiscono un planetario completo né includono ostacoli locali o rifrazione. Le previsioni sono meteo terrestre, non seeing o trasparenza astronomica misurati.
+- AstroBin apre risultati pubblici. La visualizzazione diretta delle fotografie e dei metadati richiede l'accesso alla relativa API. Non è collegato il controllo diretto di N.I.N.A., APT, ASCOM o INDI.
 
 ## Struttura
 
 ```text
 index.html
-public/                  icona
-src/data/                catalogo compresso e attribuzione
-src/scripts/main.js      app, calcoli, UI e integrazioni web
-src/styles/              token e componenti responsive
+public/
+src/data/             OpenNGC, attribuzione e provenienza gear
+src/scripts/main.js   app, catalogo, calcoli e integrazioni
+src/styles/           componenti e override responsive
 ```
