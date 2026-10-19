@@ -7,3 +7,4 @@
 @media(max-width:900px){.sky-map-layout{grid-template-columns:1fr}.sky-visible{display:grid;grid-template-columns:1fr 1fr;column-gap:12px}.sky-visible .card-head,.sky-visible .notice{grid-column:1/-1}}
 @media(max-width:680px){.sky-map-wrap{height:62vh;min-height:320px}.sky-map-legend span:last-child{flex-basis:100%}.sky-visible{display:block}.sky-map-layout{gap:9px}}
 .sensor-box:after{left:50%;top:50%;transform:translate(-50%,-50%);width:var(--object-w,30%);height:var(--object-h,30%);box-shadow:0 0 0 24px #637ab114}.alt-chart-section{padding:13px;background:#fbfaf5;border:1px solid var(--line)}.alt-chart-section h3{font-size:9px;letter-spacing:.13em;margin:0 0 5px}.alt-chart-section p{font-size:8px;color:#898b83;margin:0}.alt-chart{width:100%;height:auto;max-height:110px}.alt-chart text{font:7px ui-monospace,monospace;fill:#85877f}
+.project-event{background:#efe0d8!important;color:#984a37!important}.avail-day{accent-color:var(--blue)}
