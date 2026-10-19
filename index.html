@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f0e7" />
+    <meta name="description" content="OurSky — strumenti per l’astrofotografia amatoriale." />
+    <title>OurSky — astrofotografia</title>
+    <link rel="icon" href="public/oursky-mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="src/styles/tokens.css" />
+    <link rel="stylesheet" href="src/styles/app.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="#inizio" aria-label="OurSky, inizio">
+        <img src="public/oursky-mark.svg" alt="" width="30" height="30" />
+        <span>OurSky</span>
+      </a>
+      <nav class="main-nav" aria-label="Navigazione principale">
+        <a href="#sezioni">Funzioni</a>
+        <a href="#approccio">Progetto</a>
+      </nav>
+      <a class="header-index" href="#sezioni"><span class="live-dot"></span> ANTEPRIMA <span>01</span></a>
+    </header>
+
+    <main id="inizio">
+      <section class="hero">
+        <div class="hero-copy reveal">
+          <p class="eyebrow"><span>01</span> ASTROFOTOGRAFIA AMATORIALE</p>
+          <h1>OurSky<span class="title-period">.</span></h1>
+          <p class="hero-description">Soggetti celesti, attrezzatura e sessioni di scatto.</p>
+          <a class="primary-link" href="#sezioni">Esplora le funzioni <span aria-hidden="true">↘</span></a>
+        </div>
+        <div class="sky-art reveal" aria-label="Composizione grafica geometrica ispirata alla mappa celeste">
+          <div class="art-coordinate coord-one">RA&nbsp; 05h 35m</div>
+          <div class="art-coordinate coord-two">DEC&nbsp; −05° 23′</div>
+          <div class="art-orbit orbit-one"></div>
+          <div class="art-orbit orbit-two"></div>
+          <div class="art-axis axis-one"></div>
+          <div class="art-axis axis-two"></div>
+          <span class="art-star star-one">✳</span><span class="art-star star-two">✦</span><span class="art-star star-three">·</span>
+          <span class="art-disc"></span>
+          <span class="art-square"></span>
+          <span class="art-dot dot-one"></span><span class="art-dot dot-two"></span>
+          <span class="art-caption">ATLANTE<br />CELESTE</span>
+          <span class="art-index">01 / 04</span>
+        </div>
+        <div class="hero-foot"><span>SCOPRI</span><span class="scroll-line"></span><span>PIANIFICA</span></div>
+      </section>
+
+      <section class="modules section-wrap" id="sezioni">
+        <div class="section-intro reveal">
+          <p class="eyebrow"><span>02</span> OURSKY</p>
+          <h2>Quattro aree.<br /><span>Un cielo da esplorare.</span></h2>
+          <p>Catalogo, gear, località e pianificazione. Ogni funzione avrà la propria pagina.</p>
+        </div>
+        <div class="module-grid">
+          <article class="module-card card-blue reveal">
+            <span class="module-no">01 / CATALOGO</span>
+            <div class="module-symbol symbol-target"><i></i><b></b></div>
+            <h3>Soggetti</h3><p>Oggetti del cielo, dimensioni e finestre di osservazione.</p>
+            <span class="module-status">IN SVILUPPO</span>
+          </article>
+          <article class="module-card card-paper reveal">
+            <span class="module-no">02 / ATTREZZATURA</span>
+            <div class="module-symbol symbol-gear"><i></i><b></b></div>
+            <h3>Gear</h3><p>Telescopi, camere, filtri e campo di ripresa.</p>
+            <span class="module-status">IN SVILUPPO</span>
+          </article>
+          <article class="module-card card-red reveal">
+            <span class="module-no">03 / PIANIFICAZIONE</span>
+            <div class="module-symbol symbol-calendar"><i></i><b></b></div>
+            <h3>Progetti</h3><p>Obiettivi, disponibilità e condizioni accettabili.</p>
+            <span class="module-status">IN SVILUPPO</span>
+          </article>
+          <article class="module-card card-yellow reveal">
+            <span class="module-no">04 / OSSERVATORIO</span>
+            <div class="module-symbol symbol-location"><i></i><b></b></div>
+            <h3>Località</h3><p>Mappa, orizzonte e qualità del cielo.</p>
+            <span class="module-status">IN SVILUPPO</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="approach section-wrap" id="approccio">
+        <div class="approach-mark reveal">OS<span>·</span></div>
+        <div class="approach-copy reveal"><p class="eyebrow"><span>03</span> ARCHITETTURA</p><h2>Una pagina<br />per ogni strumento.</h2><p>Il progetto separa esplorazione del cielo, configurazione del gear, località e pianificazione. La dashboard raccoglierà solo gli estratti utili al profilo.</p></div>
+        <div class="approach-meta reveal"><span>STRUTTURA</span><b>CATALOGO<br />GEAR<br />PROGETTI<br />LOCALITÀ</b><span class="meta-rule"></span><span>VERSIONE 0.1</span></div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><a class="wordmark" href="#inizio"><img src="public/oursky-mark.svg" alt="" width="25" height="25" /><span>OurSky</span></a><span>ASTROFOTOGRAFIA AMATORIALE</span><a href="#inizio" class="back-top">TORNA SU ↑</a></footer>
+    <script src="src/scripts/main.js" defer></script>
+  </body>
+</html>
