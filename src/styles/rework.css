@@ -32,3 +32,9 @@
 .gear-item>div:nth-child(2){min-width:0}
 .gear-item h3{overflow-wrap:anywhere}
 .site-map .leaflet-control-attribution{max-width:75vw}
+.weather-strip{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;scroll-snap-type:x mandatory;scrollbar-color:#465351 transparent}
+.weather-day{flex:0 0 126px;scroll-snap-align:start;padding:10px;background:#192125!important;border:1px solid #303b3e}
+.weather-day .label-tag{color:#91a09d;font:9px ui-monospace,SFMono-Regular,Consolas,monospace;text-transform:uppercase}
+.weather-day-condition{min-height:30px;margin:8px 0 5px;color:#e2e7e1;font-size:11px}
+.weather-day-temperature{font-variant-numeric:tabular-nums;color:#e6ebe5;font-size:11px}
+.weather-day-detail{margin-top:7px;color:#97a49f;font-size:8px;line-height:1.4}
