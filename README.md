@@ -15,10 +15,10 @@ Apri `http://localhost:4173`. Verifica sintattica: `npm run check`.
 - Panoramica del sito attivo, progetti, setup e soggetti in stagione.
 - Atlante offline con 12.036 oggetti NGC/IC estratti da OpenNGC, più una selezione curata di Messier, Sharpless e altri target. Ricerca, filtri per classe/stagione e schede con coordinate J2000, dimensioni, magnitudine, campo, scienza e storia.
 - Gear composto da telescopio, camera, filtri e accessori. Include suggerimenti per modelli comuni e inserimento custom; FOV, diagonale e scala pixel vengono calcolati quando i dati ottici e del sensore sono noti.
-- Mappa cielo orientabile con giroscopio/bussola quando il dispositivo lo consente, pan manuale e geolocalizzazione attivabile dall’utente.
+- Mappa cielo orientabile con giroscopio/bussola quando il dispositivo lo consente, pan manuale, selezione dei target e geolocalizzazione attivabile dall’utente.
 - Più località, ricerca geocodificata OpenStreetMap/Nominatim, GPS, previsione Open-Meteo, link centrato alla mappa Light Pollution Map e campi Bortle/SQM modificabili.
-- Progetti con obiettivo, setup, località, ore, soglia lunare, altezza e nuvolosità; checklist, scheda esportabile e calendario lunare locale.
-- Dati profilo e checklist salvati in `localStorage` sul dispositivo.
+- Progetti con obiettivo, setup, località, ore, intervallo date, giorni preferiti, orario e soglie di luna/altezza/nuvolosità; checklist, scheda esportabile e calendario lunare locale.
+- Dati profilo e checklist salvati in `localStorage` sul dispositivo. La località iniziale è un esempio su Milano, da sostituire con GPS o ricerca del proprio sito.
 
 ## Fonti e limiti delle integrazioni
 
