@@ -1,5 +1,6 @@
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const STORE='oursky.v1';
+const curatedIds=new Set();
 const catalog=[
 {id:'M31',name:'Galassia di Andromeda',type:'galassia',subtype:'Spirale · galassia',ra:10.6847,dec:41.269,size:190,mag:3.4,const:'Andromeda',season:[8,11],moon:'Bassa',filter:'Nessuno',hours:4,story:'La grande spirale più vicina alla Via Lattea domina il cielo autunnale. La sua luce ha viaggiato per circa 2,5 milioni di anni prima di raggiungere i nostri sensori.',culture:'Conosciuta da secoli come una piccola nube, fu registrata da Abd al-Rahman al-Sufi nel X secolo. Charles Messier la inserì nel suo catalogo nel 1764. Le sue dimensioni apparenti superano quelle della Luna piena.',science:'M31 è una galassia a spirale del Gruppo Locale. Il diametro angolare è ampio: un piccolo telescopio ne riprende il nucleo, mentre le regioni esterne richiedono cieli bui e campi molto larghi.',color:'color'},
 {id:'M33',name:'Galassia del Triangolo',type:'galassia',subtype:'Spirale · galassia',ra:23.4621,dec:30.6599,size:71,mag:5.7,const:'Triangolo',season:[9,12],moon:'Bassa',filter:'Nessuno',hours:6,story:'Una spirale vista quasi frontalmente, vicina ad Andromeda e membro del Gruppo Locale. La sua luminosità superficiale è bassa: il cielo scuro fa più differenza della magnitudine integrata.',culture:'Messier la registrò nel 1764. In fotografie a lunga posa si distinguono regioni H II, tra cui NGC 604, una delle più grandi nursery stellari del Gruppo Locale.',science:'La magnitudine totale è circa 5,7, ma la luce è distribuita su un disco esteso. Per questo è una sfida fotografica sotto cieli urbani.',color:'color'},
@@ -58,7 +59,6 @@ function seasonFor(ra,dec){const months=((ra/30+2)%12)+1;let start=Math.round(mo
 const demoGear=[{id:'gear-telescope',kind:'Telescope',name:'Tecnosky quadrupletto APO 70-350 f/5',aperture:70,focal:350},{id:'gear-filter',kind:'Filter',name:'Optolong L-eNhance 1.25"',note:'Dual-band Ha + O III'}];
 const defaultSite={id:'site-home',name:'Sito principale',lat:45.4642,lon:9.19,elev:null,bortle:null,sqm:null};
 let state=loadState(),page='home',activeFilters={type:'Tutti',season:'Tutti',sort:'fits'},weatherCache=null,catalogPage=1,catalogLoaded=false;
-const curatedIds=new Set();
 function loadState(){try{let s=JSON.parse(localStorage.getItem(STORE));return {...{gear:demoGear,sites:[defaultSite],projects:[],collection:[],activeSite:defaultSite.id},...s}}catch{return {gear:demoGear,sites:[defaultSite],projects:[],collection:[],activeSite:defaultSite.id}}}
 function save(){localStorage.setItem(STORE,JSON.stringify(state));updateCounts()}
 function updateCounts(){$('#collection-count').textContent=state.collection.length;$('#project-count').textContent=state.projects.length;$('#active-site-short').textContent=(state.sites.find(s=>s.id===state.activeSite)?.name||'Sito principale').slice(0,18)}
