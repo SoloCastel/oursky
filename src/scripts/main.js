@@ -321,8 +321,8 @@ function bindPage(){
  $('#forecast-prev')?.addEventListener('click',()=>{window._forecastOffset=Math.max(0,(Number(window._forecastOffset)||0)-1);render()});
  $('#forecast-next')?.addEventListener('click',()=>{window._forecastOffset=Math.min(7,(Number(window._forecastOffset)||0)+1);render()});
  $('#forecast-dark-only')?.addEventListener('change',e=>{window._forecastDarkOnly=e.target.checked;render()});
- $('[data-forecast-day]').forEach(b=>b.onclick=()=>{window._forecastOffset=Number(b.dataset.forecastDay);render()});
- $('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+ $$('[data-forecast-day]').forEach(b=>b.onclick=()=>{window._forecastOffset=Number(b.dataset.forecastDay);render()});
+ $$('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
  $$('[data-detail]').forEach(el=>el.onclick=()=>openDetail(el.dataset.detail));
  $$('[data-action]').forEach(b=>b.onclick=()=>actions(b.dataset.action,b));
  $$('[data-remove-gear]').forEach(b=>b.onclick=e=>{e.stopPropagation();state.gear=state.gear.filter(g=>g.id!==b.dataset.removeGear);save();render()});
