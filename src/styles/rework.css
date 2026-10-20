@@ -155,3 +155,28 @@ html,body{background:#f2f1ec}body{color:var(--ink);font-family:var(--sans);backg
 @media(max-width:1050px){.home-overview{grid-template-columns:1fr 1fr}.home-target-row{grid-template-columns:minmax(0,1.25fr) minmax(270px,.75fr)}.home-target-main{grid-template-columns:minmax(145px,.75fr) minmax(0,1.25fr);gap:10px}.home-target-image,.home-target-image img{height:175px;min-height:175px}}
 @media(max-width:760px){.home-shell{gap:9px}.home-head{align-items:flex-start;padding-top:2px}.home-head h1{font-size:39px}.home-head-actions{flex-direction:column;align-items:stretch}.home-head-actions .icon-btn,.site-pill{min-height:30px;padding:6px 8px;font-size:8px}.home-overview,.home-target-row{grid-template-columns:1fr;gap:8px}.home-night-card,.home-weather-card{min-height:0}.home-night-card{padding:14px}.home-weather-card{padding:11px 13px 0}.weather-now{margin-left:-13px;margin-right:-13px;padding:7px 13px 0}.home-target-row{gap:8px}.home-side-stack{grid-template-rows:auto auto}.home-target-main{grid-template-columns:minmax(110px,.72fr) minmax(0,1.28fr);gap:10px}.home-target-image,.home-target-image img{height:170px;min-height:170px}.home-target-info h2{font-size:20px}.home-target-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.home-target-note{line-height:1.4}.home-bottom-note{flex-wrap:wrap}.home-source{width:100%}}
 @media(max-width:480px){.home-head{gap:5px}.home-head h1{font-size:34px}.home-subtitle{max-width:190px;line-height:1.4;font-size:9px}.home-head-actions{max-width:148px}.home-head-actions .home-gear-link{display:none}.home-night-top h2{font-size:18px}.moon-disc{width:48px;height:48px;flex-basis:48px}.moon-readout{gap:7px}.night-facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px 0}.home-night-footer{align-items:flex-start;flex-direction:column;gap:3px}.home-night-footer span:last-child{text-align:left}.weather-conditions{gap:8px;font-size:8px}.weather-conditions span{gap:3px}.cloud-hours{gap:3px}.cloud-hour{font-size:7px}.cloud-timeline-head{font-size:7px}.home-target-main{grid-template-columns:1fr}.home-target-image,.home-target-image img{height:180px;min-height:180px}.home-target-info{padding:2px}.home-target-stats{grid-template-columns:repeat(4,minmax(0,1fr))}.home-target-stats b{font-size:9px}.home-target-actions .button{font-size:8px}.home-section-label>span{font-size:8px}.home-nearby-card,.home-project-card{padding:10px}}
+
+/* Home refinements: a readable observing dashboard with a quiet analogue texture */
+#view:has(.home-shell){background:radial-gradient(ellipse at 14% 8%,#f4e9df66,transparent 32%),radial-gradient(ellipse at 84% 22%,#e6eaf266,transparent 35%),linear-gradient(180deg,#f7f5ef 0%,#f2f1ec 100%)}
+.home-shell{gap:12px}
+.home-head{padding:5px 0 11px;border-bottom:1px solid #dcded9}
+.home-night-card{background:radial-gradient(ellipse at 89% 5%,#e3e6f0 0,transparent 40%),radial-gradient(ellipse at 4% 100%,#f2e3d9 0,transparent 48%),linear-gradient(128deg,#faf5e9 0%,#f2edf0 56%,#e9eef0 100%)}
+.home-night-top h2{font-size:23px}
+.home-night-card,.home-weather-card{border-color:#d2d8d6;box-shadow:0 7px 22px #5963640d}
+.weather-now{transition:background .35s ease}
+.weather-now[data-kind="snow"]{background:linear-gradient(118deg,#edf1f0,#e7eaf2 52%,#e9e6ed)}
+.weather-now[data-kind="rain"]{background:linear-gradient(118deg,#e1eaf0,#dfe6ef 52%,#e9e6ef)}
+.cloud-hour i{height:24px;background:linear-gradient(180deg,#fbfaf6,#dce4e4);box-shadow:inset 0 0 0 1px #cbd5d5}
+.weather-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:35px;border-top:1px solid #d3dbda;color:#7d898d;font:9px var(--mono)}
+.weather-meta a{color:#657f8d;white-space:nowrap}
+.home-target-card,.home-project-card,.home-nearby-card{border-color:#d3d9d6;box-shadow:0 5px 20px #5963640a}
+.home-target-card{background:linear-gradient(138deg,#fbfaf6,#f7f5f0 62%,#f2f1ed)}
+.home-project-card{background:linear-gradient(135deg,#f7f0ea,#f4f0ed 54%,#eff0ee)}
+.home-nearby-card{background:linear-gradient(140deg,#f3f4ef,#f6f4ee 70%,#eeeef1)}
+.home-target-image{background:#10191e}
+.home-target-image img{object-fit:cover}
+.home-section-label{padding-bottom:8px}
+.home-section-label>span{letter-spacing:.09em}
+.home-target-info h2{letter-spacing:-.02em}
+.home-target-mini:hover{background:#ecefeb}
+@media(max-width:680px){.rail-nav{grid-template-columns:repeat(7,minmax(0,1fr))}.home-head{border-bottom-color:#dcded9}.home-overview{gap:9px}.home-target-image img{object-fit:cover}.weather-meta{font-size:8px}}
