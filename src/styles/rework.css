@@ -272,3 +272,116 @@ html,body{background:#f2f1ec}body{color:var(--ink);font-family:var(--sans);backg
 .close-detail{position:absolute;right:15px;top:12px;z-index:15}
 @media(max-width:850px){.detail-hero-grid{grid-template-columns:minmax(0,1.3fr) minmax(210px,.8fr);gap:10px}.detail-content-rich{padding:15px 18px 23px}.detail-top-rich{padding:17px 20px}.detail-workbench{grid-template-columns:1fr}.detail-workbench-side{order:2}.detail-curve{min-height:145px}}
 @media(max-width:620px){.detail-dialog{width:100%;height:100dvh;max-height:100dvh;margin:0;border:0;border-radius:0}.detail-top-rich{position:relative;min-height:0;padding:16px 44px 14px 14px;gap:8px}.detail-top-rich .detail-title-copy h2{font-size:25px}.detail-header-side{display:none}.detail-content-rich{padding:10px 11px 72px}.detail-hero-grid{grid-template-columns:1fr}.detail-survey-wide{min-height:0;aspect-ratio:1.25}.detail-survey-wide img{min-height:0}.detail-hero-data{padding:12px}.detail-hero-data h3{margin-bottom:7px}.detail-fact-list>div{padding:7px 0}.detail-workbench{grid-template-columns:1fr;gap:8px;margin-top:8px}.detail-workbench-main,.detail-workbench-side,.detail-window-section,.detail-story-section{padding:12px}.detail-frame-summary>span{min-width:30%;padding:8px 5px}.detail-position-strip{margin:8px 0}.detail-curve{min-height:100px}.detail-opportunity{grid-template-columns:1.05fr .75fr .75fr;gap:6px;padding:9px 1px}.op-weather{grid-column:1/-1;padding-left:0}.detail-story-grid{grid-template-columns:1fr;gap:6px}.detail-story-card{padding:10px}.detail-bottom-actions{position:sticky;bottom:-72px;margin:12px -11px -72px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:#f7f6f0f2;backdrop-filter:blur(8px);z-index:11;display:flex;flex-direction:column}.detail-bottom-actions>div:last-child{justify-content:stretch}.detail-bottom-actions>div:last-child .button{flex:1}.detail-bottom-actions>div:first-child{order:2}.detail-bottom-actions .button{font-size:9px;padding:7px}}
+
+
+/* OurSky field interface — observing-console skin */
+:root{color-scheme:dark;--paper:#0b0e10;--paper-2:#101416;--white:#151a1c;--ink:#e8e8df;--muted:#a0a8a4;--line:#2a3231;--red:#e6bd57;--yellow:#e6bd57;--blue:#90b8bc;--green:#a5cba9;--radius:13px}
+html,body{background:#090c0d;color:#e6e7df}
+body{background-image:radial-gradient(1px 1px at 8% 15%,#c4d2ce55 50%,transparent 100%),radial-gradient(1px 1px at 27% 7%,#c4d2ce44 50%,transparent 100%),radial-gradient(1px 1px at 56% 19%,#c4d2ce33 50%,transparent 100%),radial-gradient(1px 1px at 78% 10%,#c4d2ce44 50%,transparent 100%),radial-gradient(1px 1px at 91% 32%,#c4d2ce33 50%,transparent 100%),linear-gradient(125deg,#0a0d0e,#0e1213 48%,#0a0d0e);background-attachment:fixed}
+.app-shell{display:block;min-height:100vh}
+.rail{position:fixed;z-index:30;left:12px;top:12px;bottom:12px;width:250px;overflow:auto;border:1px solid #2b3232;border-radius:17px;background:rgba(15,19,20,.96);padding:18px 13px;box-shadow:0 12px 40px #0007;backdrop-filter:blur(16px)}
+.main-area{max-width:none;margin-left:274px;padding:0 28px;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(9,12,13,.9);border-bottom:1px solid #242b2a;backdrop-filter:blur(14px);margin:0 -28px 21px;padding:13px 28px}
+.brand{color:#f0f0e8}.brand-mark{background:#e2ba57;color:#141616;border-radius:7px}.brand-mark span{color:#384746}
+.rail-label,.rail-bottom,.rail-contexts small,.rail-tools{color:#89938e}
+.rail-nav button,.rail-tools button,.rail-contexts button{color:#bdc4be}
+.rail-nav button{border-radius:8px}.rail-nav button:hover,.rail-tools button:hover,.rail-contexts button:hover{background:#202726}
+.rail-nav button.active{background:#272a21;color:#f0d27c;border:1px solid #544a2b}
+.rail-nav button.active i{color:#ecc95d}
+.rail-search{background:#111617;border-color:#343b39;color:#cdd1ca;border-radius:8px}
+.rail-search kbd{background:#262d2c;color:#c2c9c2;border-color:#3c4440}
+.rail-contexts{border-top:1px solid #29302e;border-bottom:1px solid #29302e;margin-top:15px;padding:8px 0}
+.rail-contexts button{width:100%;display:flex;align-items:center;text-align:left;padding:9px 7px;border:0;border-radius:8px;background:transparent;gap:9px}
+.rail-contexts button>span{display:grid;min-width:0;gap:2px;flex:1}
+.rail-contexts button b{font-size:11px;color:#e1e4dc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rail-contexts button em{font-size:9px;color:#929c96;font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rail-contexts button i{font-style:normal;width:27px;height:27px;display:grid;place-items:center;border:1px solid #34403c;border-radius:7px;color:#dfc15e;background:#191f1e}
+.rail-contexts button .rail-chevron{color:#78817b}
+.rail-tools{display:grid;gap:2px;padding:11px 4px}.rail-tools button{font:inherit;font-size:10px;text-align:left;padding:8px;border:0;background:none;border-radius:7px}
+.rail-bottom{border-top:1px solid #29302e;padding-top:12px}
+.top-actions{gap:7px}.today,.crumb span,.crumb i{color:#89938d}.crumb b{color:#e4e5dd}
+.icon-btn,.avatar{background:#121718;border-color:#303937;color:#d4d8d1;border-radius:7px}.icon-btn:hover{border-color:#c6a84f;color:#f0d77e}
+.page-title-row h1,.home-head h1{color:#f0f0e9}.page-title-row p,.home-subtitle{color:#9fa8a2}
+.eyebrow,.home-kicker,.label-tag{color:#c2aa5c}
+.card,.home-night-card,.home-weather-card,.home-target-card,.home-project-card,.home-nearby-card,.catalog-tools,.forecast-panel,.detail-dialog,.modal-dialog,.project-card,.site-card,.gear-card{background:#131819;border:1px solid #2a3331;color:#e4e6de;box-shadow:0 7px 22px #0002}
+.home-night-card,.home-weather-card,.home-target-card,.home-project-card,.home-nearby-card{border-radius:12px}
+.home-night-card h2,.home-target-info h2,.home-side-stack h3,.card h2,.card h3{color:#f1f1e9}
+.home-kicker,.home-section-label,.forecast-kicker{color:#c6ad61}
+.night-facts,.home-night-footer,.home-target-stats,.home-bottom-note,.home-target-note{border-color:#303735;color:#b9c1ba}
+.night-facts span,.home-target-stats small{color:#8f9a93}
+.moon-disc{box-shadow:0 0 24px #e4c85a30}
+.moon-meter{background:#30352f}.moon-meter>span{background:#d8bd67}
+.button{background:#d9bb61;border-color:#d9bb61;color:#171816}.button:hover{background:#f0d681}
+.button.light,.text-button,.filter-toggle{background:#1a2020;border-color:#343c39;color:#d0d4cb}
+.text-button:hover,.button.light:hover{border-color:#ad9851;color:#edd37d}
+.footer{color:#78837d;border-color:#252d2a}
+.home-weather-card .weather-now{background:linear-gradient(130deg,#202a28,#19201f);border-color:#33403a;color:#e4e7df}
+.weather-conditions,.cloud-timeline,.weather-meta{border-color:#34403c;color:#bac2bb}
+.weather-now-copy small,.weather-source,.cloud-timeline-head,.weather-meta{color:#a5b0a8}
+.weather-now-copy strong{color:#f0f1e8}.weather-symbol{color:#dec363}.weather-rain{background:#222c29;color:#dfe4da}
+.cloud-hour b,.weather-conditions b{color:#e3e6de}
+.home-target-image{background:#0b0e0f}
+.home-target-ids,.muted-copy,.home-project-card p,.home-nearby-card small{color:#a3ada6}
+.home-target-mini{border-color:#303836;color:#e2e6dc}.home-target-mini:hover{background:#202725}
+.home-project-card{background:linear-gradient(145deg,#1b211f,#151a19)}
+.home-nearby-card{background:#131819}
+.catalog-tools{padding:15px;border-radius:12px}
+.search,.select,.catalog-search-wrap{background:#0e1314;border-color:#333d39;color:#e2e6dd}
+.catalog-search-wrap input{color:#e3e6df}
+.facet-chip,.filter-count,.filter-toggle{background:#1a2020;border-color:#35403b;color:#bac2ba}
+.facet-chip[aria-pressed=true],.facet-chip.is-active{background:#35311f;border-color:#8a743a;color:#f0d681}
+.facet-label,.facet-hint,.filter-explainer,.catalog-status,.catalog-columns,.catalog-credit{color:#9da7a0}
+.advanced-filters{border-color:#303835}.catalog-status,.catalog-columns{border-color:#303835}
+.target-list,.discovery-row,.catalog-row,.target-row{border-color:#303835}
+.discovery-row,.catalog-row,.target-row{color:#e3e5dd}.discovery-row:hover,.catalog-row:hover,.target-row:hover{background:#171e1c}
+.target-main b,.target-main strong,.discovery-main b{color:#f0f0e8}
+.target-main small,.target-facts small,.target-fit small{color:#a3aca5}
+.detail-dialog{background:#101516;color:#e8e9e1;border-color:#36403c}
+.detail-top-rich,.detail-hero-data,.detail-workbench-main,.detail-workbench-side,.detail-window-section,.detail-story-section,.detail-story-card{background:#151b1b;border-color:#303a36;color:#e4e6de}
+.detail-top-rich h2,.detail-content-rich h3,.detail-story-section h3{color:#f0f1e8}
+.detail-top-rich p,.detail-content-rich p,.detail-fact-list,.detail-frame-summary,.detail-story-card p{color:#b0b9b1}
+.detail-position-strip,.detail-opportunity{border-color:#35403b}
+.detail-bottom-actions{background:#101516ed!important;border-color:#303a36}
+.modal-dialog{background:#131819;color:#e3e6de;border-color:#35403c}
+.modal-dialog input,.modal-dialog select,.modal-dialog textarea{background:#0c1112;color:#e4e7df;border-color:#36403b}
+.field label,.form-grid label,.notice{color:#aab3ab}
+.geo-hit,.project-target-hit{color:#e1e5dc;border-color:#303a36;background:#171d1c}
+.forecast-dashboard{display:grid;gap:13px}
+.forecast-daybar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 15px;background:#141a1a;border:1px solid #2c3632;border-radius:11px}
+.forecast-daybar h2{font-size:19px;margin:5px 0;color:#eff0e8}
+.forecast-daybar p,.forecast-panel-head p{color:#a0aaa2;font-size:10px;margin:3px 0}
+.forecast-day-actions{display:flex;gap:6px}
+.forecast-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.forecast-summary article{display:grid;align-content:start;gap:5px;padding:12px;background:#141a1a;border:1px solid #2d3633;border-radius:10px}
+.forecast-summary article>span{font-size:8px;letter-spacing:.1em;color:#b8a455}
+.forecast-summary article strong{font:500 25px 'DM Mono',monospace;color:#e9e8dc}
+.forecast-summary article b{font-size:11px;color:#d4d8cf}
+.forecast-summary article small{font-size:9px;color:#929d95;line-height:1.4}
+.forecast-summary-main{background:linear-gradient(130deg,#24271c,#171d1b)!important;border-color:#514a2b!important}
+.forecast-panel{padding:14px;border-radius:11px}
+.forecast-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.forecast-panel-head h3{font-size:14px;margin:4px 0;color:#e8eae2}
+.forecast-toggle{font-size:10px;color:#bac2b9;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.forecast-table-scroll{overflow:auto;border:1px solid #2b3531;border-radius:8px}
+.forecast-matrix{width:max-content;min-width:100%;border-collapse:separate;border-spacing:0;font:9px 'DM Mono',monospace}
+.forecast-matrix th,.forecast-matrix td{padding:8px 7px;text-align:center;border-bottom:1px solid #27302d;border-right:1px solid #222b28;white-space:nowrap}
+.forecast-matrix thead th{position:sticky;top:0;background:#171e1c;color:#adb5ab;font-weight:400}
+.forecast-matrix tbody th{position:sticky;left:0;z-index:2;text-align:left;background:#171d1c;color:#c5c9bf;font:9px 'IBM Plex Sans',sans-serif}
+.forecast-matrix tbody tr:hover td{background:#1c2420}
+.forecast-matrix .is-dark-hour{background:#1a211d}
+.forecast-matrix td[data-level=low]{background:linear-gradient(0deg,#6e97554f var(--weather-value),transparent var(--weather-value))}
+.forecast-matrix td[data-level=mid]{background:linear-gradient(0deg,#c4a84c55 var(--weather-value),transparent var(--weather-value))}
+.forecast-matrix td[data-level=high]{background:linear-gradient(0deg,#b96b5266 var(--weather-value),transparent var(--weather-value))}
+.forecast-empty{color:#68736d}.forecast-sky{color:#717c72}.forecast-sky.is-dark-hour{color:#d7c578}.forecast-target{color:#bdc9e1}.forecast-legend{display:flex;gap:14px;flex-wrap:wrap;padding-top:9px;color:#969f98;font-size:9px}.forecast-legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}.legend-cloud-low{background:#88a975}.legend-cloud-high{background:#bd755d}.legend-dark{background:#d7c578}
+.forecast-week-grid{display:grid;grid-template-columns:repeat(7,minmax(110px,1fr));gap:6px}
+.forecast-night-card{display:grid;gap:6px;text-align:left;padding:10px;background:#101515;border:1px solid #2d3733;border-radius:8px;color:#cbd1c9;font:9px 'IBM Plex Sans',sans-serif;cursor:pointer}
+.forecast-night-card:hover,.forecast-night-card.is-selected{border-color:#b49a4d;background:#20231c}
+.forecast-night-date{font-size:10px;color:#ecece3}.forecast-night-moon{display:flex;align-items:center;gap:6px;color:#aeb6ac}
+.forecast-night-moon i{width:12px;height:12px;border-radius:50%;background:linear-gradient(90deg,#dfd9b9 var(--moon-lit),#3d4340 var(--moon-lit));display:inline-block}
+.forecast-night-card b{font-size:10px;color:#e4d18c}.forecast-night-card>span:not(.forecast-night-date):not(.forecast-night-moon){color:#9ba59e}
+.forecast-disclaimer{font-size:9px;color:#8f9991;line-height:1.5;margin:0}
+.loading,.empty{background:#131819;border-color:#303a36;color:#aeb8b0}
+.toast{background:#d9bb61;color:#181916}
+@media(max-width:900px){.main-area{margin-left:258px;padding:0 18px}.topbar{margin:0 -18px 16px;padding:12px 18px}.forecast-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.forecast-week-grid{grid-template-columns:repeat(4,minmax(100px,1fr))}}
+@media(max-width:680px){.rail{left:0;top:0;bottom:0;width:min(290px,86vw);border-radius:0 16px 16px 0;transform:translateX(-105%);transition:transform .24s ease}.rail.open{transform:translateX(0)}.main-area{margin-left:0;padding:0 12px 74px}.topbar{margin:0 -12px 14px;padding:10px 12px}.top-actions .today,.top-rig,.top-target,.avatar{display:none}.top-site{max-width:120px}.forecast-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.forecast-week-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.forecast-daybar{align-items:flex-start;flex-direction:column}.forecast-day-actions{width:100%}.forecast-day-actions .button{flex:1}.forecast-panel-head{align-items:flex-start;flex-direction:column}.forecast-toggle{white-space:normal}.forecast-matrix{font-size:8px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
