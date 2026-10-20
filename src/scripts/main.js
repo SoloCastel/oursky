@@ -471,6 +471,7 @@ async function loadWeather(force=false){
  if(!target)return;
  if(weatherCache&&!force&&weatherCache.site===s.id){
   target.innerHTML=page==='forecast'?forecastPageHTML(weatherCache.data):weatherHTML(weatherCache.data,page==='home');
+  if(page==='forecast')bindPage();
   if(page==='home')applyHomeSolarTimes(weatherCache.data);
   return;
  }
@@ -482,6 +483,7 @@ async function loadWeather(force=false){
   weatherCache={site:s.id,data};
   target=page==='home'?$('#weather-snippet'):page==='forecast'?$('#forecast-content'):$('#weather-full');
   if(target)target.innerHTML=page==='forecast'?forecastPageHTML(data):weatherHTML(data,page==='home');
+  if(page==='forecast'&&target)bindPage();
   if(page==='home')applyHomeSolarTimes(data);
   if(page==='sites'&&Number.isFinite(data.elevation))render();
  }catch{
