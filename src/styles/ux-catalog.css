@@ -22,3 +22,8 @@
 .catalog-visual{position:relative}
 @media(max-width:1200px){.target-list{grid-template-columns:1fr}}
 @media(max-width:680px){.catalog-row.catalog-visual{grid-template-columns:98px minmax(0,1fr) auto!important;gap:0 10px;min-height:144px;padding:9px!important}.catalog-visual .catalog-image{width:98px;height:123px}.catalog-visual .catalog-object strong{font-size:14px}.catalog-visual .catalog-alt{grid-column:2 / 4;grid-row:3;align-self:start;text-align:left;margin-top:8px}.catalog-visual .catalog-alt small{display:inline}.catalog-visual .catalog-frame{grid-column:2 / 4;grid-row:4;margin-top:7px}.catalog-visual .catalog-size{grid-column:2 / 4;grid-row:2;align-self:start;margin-top:8px}.catalog-visual .catalog-size small{display:inline}.catalog-visual .row-arrow{right:9px;top:7px}}
+
+.catalog-quick-picks{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0;padding:12px 14px;border:1px solid #34433e;border-radius:9px;background:#17211e}
+.catalog-quick-picks>span{font-size:10px;letter-spacing:.1em;color:#abbbaf;font-weight:700;margin-right:4px}
+.catalog-quick-picks button{font-size:11px;color:#ecdfc6;padding:9px 12px;border-radius:6px;background:#283a33;border:1px solid #496353;cursor:pointer}
+.catalog-quick-picks button:hover,.catalog-quick-picks button:focus-visible{background:#385b45;outline-color:#b7d4a0}
