@@ -183,13 +183,17 @@ function surveyUrl(o,frame=null,width=640,height=420){
 // Each preview tries the cached first-party endpoint, then the CDS endpoints.
 // If all image services fail, a live Aladin tile viewer is used for visible cards.
 function surveyFallback(img){
+ if(!img.isConnected||img.naturalWidth>0)return;
  const attempt=Number(img.dataset.retry||0);
- if(img.dataset.editorial==='1'&&attempt===0){img.dataset.retry='1';img.src=img.dataset.proxy;return}
- if(attempt<=1){img.dataset.retry='2';img.src=img.dataset.cds;return}
- if(attempt===2){img.dataset.retry='3';img.src=img.dataset.cds.replace('alasky.cds.unistra.fr','alaskybis.cds.unistra.fr');return}
- img.hidden=true;const holder=img.parentElement;if(!holder)return;
+ if(attempt===0){img.dataset.retry='1';img.src=img.dataset.cds.replace('alasky.cds.unistra.fr','alaskybis.cds.unistra.fr');return}
+ if(attempt===1){img.dataset.retry='2';img.src=img.dataset.proxy;return}
+ img.dataset.retry='4';img.hidden=true;
+ const holder=img.parentElement;if(!holder)return;
  holder.classList.add('no-image');
- if(!holder.querySelector('.survey-unavailable')){const note=document.createElement('span');note.className='survey-unavailable';note.textContent='Anteprima non raggiungibile';holder.appendChild(note)}
+ if(!holder.querySelector('.survey-unavailable')){
+  const note=document.createElement('span');note.className='survey-unavailable';
+  note.textContent='Survey non raggiungibile';holder.appendChild(note)
+ }
  if(img.dataset.preview==='detail')initAladinPreview(holder,img);
  else if(img.dataset.preview==='card')scheduleAladinCard(holder,img);
 }
@@ -225,13 +229,32 @@ async function initAladinPreview(holder,img){
   const label=holder.querySelector('.survey-unavailable');if(label)label.remove();
  }catch(err){console.warn('Anteprima HiPS non disponibile:',err)}
 }
-const editorialPhotos={"M42":"Orion_Nebula_(M42).jpg","M31":"The_Andromeda_Galaxy_M31.jpg","NGC7635":"The_Bubble_Nebula_-_NGC_7635_-_Heic1608a.jpg","Sh2-157":"SH2-157_Lobster_Claw_crop.jpg","NGC7000":"North_America_Nebula_NGC_7000.jpg","NGC1499":"California-nebula.jpeg"};
-function editorialPhoto(o){const f=editorialPhotos[o.id];return f?'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(f)+'?width=640':null}
-function watchPreviewImages(root){if(!root)return;root.querySelectorAll('img[data-preview]:not([data-watched])').forEach(img=>{img.dataset.watched='1';setTimeout(()=>{if(img.isConnected&&!img.complete)surveyFallback(img)},7500)})}
+function editorialPhoto(){return null}
+function watchPreviewImages(root){
+ if(!root)return;
+ root.querySelectorAll('img[data-preview]:not([data-watched])').forEach(img=>{
+  img.dataset.watched='1';
+  // Deadline for EACH attempt, not only the first URL. An upstream request
+  // stalled at the HTTP layer otherwise leaves a blank image forever.
+  let lastSrc=img.currentSrc||img.src,started=Date.now(),tries=0;
+  const interval=setInterval(()=>{
+   if(!img.isConnected||img.naturalWidth>0||img.dataset.retry==='4'){clearInterval(interval);return}
+   const src=img.currentSrc||img.src;
+   if(src!==lastSrc){lastSrc=src;started=Date.now()}
+   if(Date.now()-started<4500)return;
+   tries++;started=Date.now();
+   if(tries>4){clearInterval(interval);return}
+   surveyFallback(img);
+  },650);
+ });
+}
 function surveyImage(o,frame=null,width=480,height=320,mode='card'){
- const u=surveyUrl(o,frame,width,height),photo=mode==='card'?editorialPhoto(o):null,proxy='/api/survey?'+new URL(u).searchParams.toString();
+ const url=surveyUrl(o,frame,width,height);
+ const proxy='/api/survey?'+new URL(url).searchParams.toString();
  const fov=frame?Math.max(frame.w,frame.h):Math.max(.18,Math.min(6,(Number.isFinite(o.size)?o.size:20)/60*1.65));
- return '<img loading="lazy" decoding="async" src="'+(photo||proxy)+'" data-cds="'+u+'" data-proxy="'+proxy+'" data-editorial="'+(photo?'1':'0')+'" data-ra="'+o.ra+'" data-dec="'+o.dec+'" data-fov="'+fov+'" data-preview="'+mode+'" alt="'+esc(o.name)+'" onerror="surveyFallback(this)">';
+ // Make the public astronomy image the immediate request. Proxy is fallback,
+ // not a 2x 9s blocking prerequisite.
+ return '<img loading="'+(mode==='card'?'eager':'lazy')+'" decoding="async" src="'+url+'" data-cds="'+url+'" data-proxy="'+proxy+'" data-ra="'+o.ra+'" data-dec="'+o.dec+'" data-fov="'+fov+'" data-preview="'+mode+'" alt="Rilievo astronomico DSS2 di '+esc(o.name)+'" onerror="surveyFallback(this)">';
 }
 function surveyFigure(o,frame=null,extra=''){
  const fov=frame?Math.max(frame.w,frame.h):Math.max(.18,Math.min(6,(Number.isFinite(o.size)?o.size:20)/60*1.65));
