@@ -1,0 +1,27 @@
+/* Meteo astronomico: evidenza delle finestre favorevoli, sempre basate su dati reali. */
+.home-opportunities{margin:0 0 18px;padding:18px;border-radius:12px;border:1px solid #374b4b;background:#172529;color:#e9eee9}
+.opportunities-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:12px}
+.opportunities-head h2{margin:5px 0 0;font-size:24px;letter-spacing:-.04em;color:#f6f4e9}
+.opportunities-head>span{font-size:11px;color:#a4b9b5}
+.opportunities-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.opportunity-card{text-align:left;padding:16px;border-radius:9px;border:1px solid #435251;background:#233133;display:flex;flex-direction:column;gap:9px;min-height:160px;width:100%;color:#e2e8e6;cursor:pointer}
+.opportunity-card .opportunity-date{font-size:11px;letter-spacing:.04em;text-transform:capitalize;color:#aebfbe}
+.opportunity-card strong{font-size:20px;line-height:1.05;letter-spacing:-.03em}
+.opportunity-details{font-size:11px;line-height:1.45;color:#d2dcda}
+.opportunity-moon{font-size:10px;color:#aabbb6;margin-top:auto}
+.opportunity-link{font-size:11px;font-weight:700;color:#e8c698}
+.opportunity-card.level-excellent{background:#143f38;border-color:#56b79d;box-shadow:inset 4px 0 0 #75d6af}
+.opportunity-card.level-good{background:#294237;border-color:#a4bf76;box-shadow:inset 4px 0 0 #bbd48b}
+.opportunity-card.level-mixed{background:#3c3528;border-color:#8d7853}
+.opportunity-card.level-poor{background:#262f35}
+.opportunity-card.level-unknown{background:#222c32;border-style:dashed}
+.opportunity-card:hover{filter:brightness(1.12)}
+.opportunities-loading,.opportunity-unavailable{font-size:13px;color:#aebebc}
+.forecast-highlights{background:#172529;border:1px solid #3b5050;border-radius:10px;padding:16px;margin-bottom:16px;color:#edf2ed}
+.forecast-highlights h3{font-size:18px;letter-spacing:-.02em;margin:0 0 12px}
+.forecast-night-card.level-excellent{border-color:#6cb69b!important;box-shadow:inset 0 4px #79cfa6}
+.forecast-night-card.level-good{border-color:#a5bf79!important;box-shadow:inset 0 4px #b4cd88}
+.forecast-night-card .night-quality{font-size:11px;font-weight:750;line-height:1.25}
+.catalog-image:not(.no-image){background:linear-gradient(135deg,#0b1821,#26383e)}
+.survey-figure.survey-error::before{content:"Anteprima DSS2 non disponibile";display:flex;align-items:center;justify-content:center;min-height:150px;padding:10px;color:#b7c4c6;text-align:center;font-size:12px}
+@media(max-width:850px){.opportunities-grid{grid-template-columns:1fr}.opportunity-card{min-height:130px}.opportunities-head{align-items:start;flex-direction:column}}
