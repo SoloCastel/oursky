@@ -179,7 +179,15 @@ function surveyUrl(o,frame=null,width=640,height=420){
   const params=new URLSearchParams({hips:'CDS/P/DSS2/color',ra:String(o.ra),dec:String(o.dec),fov:String(fov),width:String(width),height:String(height),projection:'TAN',coordsys:'icrs',format:'jpg',stretch:'asinh',min_cut:'0.5%',max_cut:'99.5%'});
   return `https://alasky.cds.unistra.fr/hips-image-services/hips2fits?${params.toString()}`;
 }
-function surveyFigure(o,frame=null,extra=''){const fov=frame?Math.max(frame.w,frame.h):Math.max(.18,Math.min(6,(Number.isFinite(o.size)?o.size:20)/60*1.65));return `<figure class="survey-figure ${extra}"><img loading="lazy" decoding="async" src="${surveyUrl(o,frame)}" alt="Immagine DSS2 reale di ${esc(o.name)}, centrata su ${esc(o.id)}, campo ${fov.toFixed(2)} gradi" onerror="this.closest('figure').classList.add('survey-error');this.remove()"><figcaption><span>IMMAGINE DI SURVEY · DSS2</span><span>campo ${fov.toFixed(2)}°</span></figcaption></figure>`}
+function surveyFallback(img){
+ const original=img.dataset.originalSrc||img.src;
+ if(!img.dataset.originalSrc)img.dataset.originalSrc=original;
+ const attempt=Number(img.dataset.retry||0);
+ if(attempt===0){img.dataset.retry='1';img.src=original.replace('alasky.cds.unistra.fr','alaskybis.cds.unistra.fr');return}
+ if(attempt===1){img.dataset.retry='2';img.src='/api/survey?'+new URL(original).searchParams.toString();return}
+ img.hidden=true;const holder=img.parentElement;if(holder){holder.classList.add('no-image');holder.setAttribute('title','Anteprima DSS2 temporaneamente non disponibile')}
+}
+function surveyFigure(o,frame=null,extra=''){const fov=frame?Math.max(frame.w,frame.h):Math.max(.18,Math.min(6,(Number.isFinite(o.size)?o.size:20)/60*1.65));return `<figure class="survey-figure ${extra}"><img loading="lazy" decoding="async" src="${surveyUrl(o,frame)}" alt="Immagine DSS2 reale di ${esc(o.name)}, centrata su ${esc(o.id)}, campo ${fov.toFixed(2)} gradi" onerror="surveyFallback(this)"><figcaption><span>IMMAGINE DI SURVEY · DSS2</span><span>campo ${fov.toFixed(2)}°</span></figcaption></figure>`}
 function renderHome(){
  const site=state.sites.find(s=>s.id===state.activeSite)||defaultSite,f=fovData(),now=new Date(),phase=moonPhaseName(now),illum=moonIllum(now),gear=state.gear.find(x=>x.kind==='Telescope'),camera=state.gear.find(x=>x.kind==='Camera');
  const candidates=catalog.filter(o=>isSeason(o)&&peakAlt(o,site)>25&&suitability(o)!=='dettaglio / mosaico').sort((a,b)=>fitScore(b)-fitScore(a));
@@ -187,7 +195,7 @@ function renderHome(){
  const moonPhase=illum<4?'Luna nuova':illum>96?'Luna piena':phase;
  return `<section class="home-shell">
   <header class="home-head"><div><p class="home-kicker"><span class="live-dot"></span> OSSERVATORIO</p><h1>Stasera</h1><p class="home-subtitle">${esc(site.name)} <span>·</span> ${site.lat.toFixed(2)}°, ${site.lon.toFixed(2)}° ${site.elev?`· ${site.elev} m`:''}</p></div><div class="home-head-actions"><button class="icon-btn home-gear-link" data-go="gear">${esc(gear?.name||'Configura setup')} <i>↗</i></button></div></header>
-  <section class="home-overview">
+  <section class="home-opportunities" id="home-opportunities"><div class="opportunities-loading">Analisi delle prossime notti in corso…</div></section><section class="home-overview">
    <article class="home-night-card"><div class="home-night-top"><div><span class="home-kicker">LUNA DI OGGI</span><h2>${esc(moonPhase)}</h2></div><div class="moon-readout"><div class="moon-disc moon-${illum<50?'crescent':'gibbous'}" style="--moon-lit:${illum}%" aria-label="Luna ${illum}% illuminata"></div><strong>${illum}<small>%</small></strong></div></div><div class="moon-meter"><span style="width:${illum}%"></span></div><div class="night-facts"><div><span>TRAMONTO</span><b id="home-sunset">—:—</b></div><div><span>ALBA</span><b id="home-sunrise">—:—</b></div><div><span>CIELO BUIO</span><b>${site.bortle?`Bortle ${esc(site.bortle)}`:'Da impostare'}</b></div><div><span>SETUP</span><b>${esc(gear?.name||'Da configurare')}</b></div></div><div class="home-night-footer"><span>${esc(camera?.name||'Camera non impostata')}</span><span>${f?`${f.w.toFixed(2)}° × ${f.h.toFixed(2)}° · ${f.scale?`${f.scale.toFixed(2)}″/px · diagonale ${(f.diag/60).toFixed(2)}°`:'scala n.d.'}`:'Campo non calcolabile'}</span></div></article>
    <article class="home-weather-card"><div class="weather-card-head"><div><span class="home-kicker">METEO · PROSSIME ORE</span><span class="weather-source">Open-Meteo · aggiornamento automatico</span></div><button class="weather-refresh" data-action="refresh-weather" aria-label="Aggiorna meteo">↻</button></div><div id="weather-snippet"><div class="weather-loading"><span class="weather-sun"></span><span>Carico il meteo per ${esc(site.name)}…</span></div></div></article>
   </section>
@@ -218,7 +226,7 @@ function catalogRow(o,site){
  const title=common[0]||o.name,frame=frameClass(o),transit=transitInfo(o,site);
  const extent=sizeLabel(o),mag=magLabel(o),image=surveyUrl(o,null,320,240);
  return `<button class="catalog-row catalog-visual" data-detail="${esc(o.id)}" aria-label="Apri scheda ${esc(title)}">
- <span class="catalog-image"><img loading="lazy" decoding="async" src="${image}" alt="Rilievo astronomico DSS2 di ${esc(title)}" onerror="this.hidden=true;this.parentElement.classList.add('no-image')"><small>DSS2 · SURVEY</small></span>
+ <span class="catalog-image"><img loading="lazy" decoding="async" src="${image}" alt="Rilievo astronomico DSS2 di ${esc(title)}" onerror="surveyFallback(this)"><small>DSS2 · SURVEY</small></span>
  <span class="catalog-object"><strong>${esc(title)}</strong><small>${esc(ids.slice(0,4).join(' · '))}</small><span class="catalog-kind">${esc(o.subtype||o.type)} · ${esc(o.const)}</span></span>
  <span class="catalog-size"><b>${extent}</b><small>dimensione angolare</small><small>mag ${mag}</small></span>
  <span class="catalog-alt"><b>${transit.alt.toFixed(0)}°</b><small>culminazione ${transit.time.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}</small><small>${azLabel(transit.az)}</small></span>
@@ -252,6 +260,59 @@ function initSiteMap(){
 }
 function localHourKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'T'+String(d.getHours()).padStart(2,'0')}
 function forecastDark(d,site){const sun=sunRaDec(d);return altAz(sun.ra,sun.dec,site.lat,site.lon,d).alt<-12}
+// Indicatore delle opportunità fotografiche basato su ore notturne, non sul meteo diurno.
+// La Luna è mostrata separatamente: una notte limpida può restare utile per banda stretta.
+function nightOpportunities(data,site){
+ const h=data?.hourly;
+ if(!h?.time||!h.cloud_cover||!h.precipitation_probability)return [];
+ const days=(data.daily?.time||[]).slice(0,10);
+ return days.map((date,dayIndex)=>{
+  const end=new Date(date+'T12:00:00');end.setDate(end.getDate()+1);
+  const endDate=localDateKey(end);
+  const samples=[];
+  for(let i=0;i<h.time.length;i++){
+   const stamp=h.time[i],hour=Number(stamp.slice(11,13));
+   if(!((stamp.slice(0,10)===date&&hour>=18)||(stamp.slice(0,10)===endDate&&hour<7)))continue;
+   const cloud=h.cloud_cover[i],rain=h.precipitation_probability[i],wind=h.wind_speed_10m?.[i];
+   if(!Number.isFinite(cloud)||!Number.isFinite(rain))continue;
+   const d=new Date(stamp);
+   if(!Number.isFinite(d.getTime())||!forecastDark(d,site))continue;
+   samples.push({hour,cloud,rain,wind});
+  }
+  const avg=(key)=>Math.round(samples.reduce((sum,x)=>sum+x[key],0)/samples.length);
+  const moon=moonIllum(new Date(date+'T23:00:00'));
+  if(samples.length<3)return {date,dayIndex,level:'unknown',name:'Previsione incompleta',samples:samples.length,moon};
+  const clouds=avg('cloud'),rain=avg('rain');
+  const dry=samples.filter(x=>x.rain<=20&&x.cloud<=30).length;
+  const goodHours=samples.filter(x=>x.rain<=25&&x.cloud<=35).length;
+  const rainMax=Math.max(...samples.map(x=>x.rain));
+  const windValues=samples.map(x=>x.wind).filter(Number.isFinite);
+  const wind=windValues.length?Math.round(windValues.reduce((a,b)=>a+b,0)/windValues.length):null;
+  let level='poor',name='Poco favorevole';
+  if(goodHours>=3&&clouds<=25&&rainMax<=20&&(!Number.isFinite(wind)||wind<=22)){level='excellent';name='Ottima finestra meteo'}
+  else if(goodHours>=2&&clouds<=45&&rainMax<=40){level='good';name='Buona finestra meteo'}
+  else if(clouds<=65&&rain<=45){level='mixed';name='Condizioni variabili'}
+  return {date,dayIndex,level,name,clouds,rain,rainMax,wind,moon,goodHours,dry,samples:samples.length};
+ });
+}
+function opportunityHTML(n){
+ const label=new Date(n.date+'T12:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
+ const detail=n.level==='unknown'?'Dati orari insufficienti per valutare questa notte':`${n.goodHours} h con nuvolosità ≤35% e pioggia ≤25% · nuvole medie ${n.clouds}% · probabilità pioggia massima ${n.rainMax}%`;
+ return `<button class="opportunity-card level-${n.level}" data-forecast-day="${n.dayIndex}" type="button"><span class="opportunity-date">${esc(label)}</span><strong>${esc(n.name)}</strong><span class="opportunity-details">${esc(detail)}</span><span class="opportunity-moon">Luna ${n.moon}% · verifica seeing, trasparenza e target</span><span class="opportunity-link">Vedi le ore della notte →</span></button>`;
+}
+function homeOpportunitiesHTML(data){
+ const site=state.sites.find(s=>s.id===state.activeSite)||defaultSite;
+ const nights=nightOpportunities(data,site);
+ const favorable=nights.filter(n=>n.level==='excellent'||n.level==='good');
+ const selected=[...favorable.slice(0,3),...nights.filter(n=>!favorable.includes(n)).slice(0,Math.max(0,3-favorable.length))].slice(0,3);
+ return `<div class="opportunities-head"><div><span class="home-kicker">FINESTRE PER ASTROFOTOGRAFIA</span><h2>Le prossime notti</h2></div><span>Previsioni orarie Open-Meteo · ${esc(site.name)}</span></div><div class="opportunities-grid">${selected.map(opportunityHTML).join('')}</div>`;
+}
+function updateHomeOpportunities(data){
+ const target=$('#home-opportunities');
+ if(!target)return;
+ target.innerHTML=homeOpportunitiesHTML(data);
+ $$('[data-forecast-day]',target).forEach(b=>b.onclick=()=>{window._forecastOffset=Math.min(7,Number(b.dataset.forecastDay)||0);go('forecast')});
+}
 function forecastPageHTML(data){
  const site=state.sites.find(s=>s.id===state.activeSite)||defaultSite;
  const offset=Math.max(0,Math.min(7,Number(window._forecastOffset)||0)),day=new Date();day.setHours(0,0,0,0);day.setDate(day.getDate()+offset);
@@ -274,14 +335,15 @@ function forecastPageHTML(data){
  if(target)rows.push(['Altezza · '+esc(target.name),shownEntries.map(e=>'<td class="forecast-target '+(e.dark?'is-dark-hour':'')+'">'+(e.p.alt>0?Math.round(e.p.alt)+'°':'sotto orizz.')+'</td>').join('')]);
  const dateLabel=day.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
  const sunrise=dayIndex>=0?time(data.daily.sunrise?.[dayIndex]):'—',sunset=dayIndex>=0?time(data.daily.sunset?.[dayIndex]):'—';
+ const opportunities=nightOpportunities(data,site);
  const cards=Array.from({length:7},(_,n)=>{
   const ix=offset+n,dt=new Date(day);dt.setDate(dt.getDate()+n);const samples=[];
   for(let k=0;k<=13;k++){const x=new Date(dt);x.setHours(18+k,0,0,0);if(!forecastDark(x,site))continue;const j=h.time.findIndex(t=>t.slice(0,13)===localHourKey(x));if(j>=0)samples.push({j,x,alt:target?altAz(target.ra,target.dec,site.lat,site.lon,x).alt:null})}
   const cc=avg(samples.map(x=>h.cloud_cover[x.j]).filter(Number.isFinite)),rain=Math.max(0,...samples.map(x=>h.precipitation_probability?.[x.j]||0)),wind=avg(samples.map(x=>h.wind_speed_10m[x.j]).filter(Number.isFinite)),best=target?Math.max(-90,...samples.map(x=>x.alt)):-1,mi=moonIllum(new Date(dt.getFullYear(),dt.getMonth(),dt.getDate(),23));
-  return '<button class="forecast-night-card '+(ix===offset?'is-selected':'')+'" data-forecast-day="'+ix+'" aria-pressed="'+(ix===offset)+'"><span class="forecast-night-date">'+dt.toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'})+'</span><span class="forecast-night-moon"><i style="--moon-lit:'+mi+'%"></i>'+mi+'%</span><b>'+ (cc===null?'Meteo n.d.':'Nuvole '+cc+'%')+'</b><span>'+samples.length+' h di buio · pioggia '+rain+'%</span>'+(target?'<span>'+(best>0?'culmina a '+Math.round(best)+'°':'sotto orizzonte')+'</span>':'<span>'+(wind===null?'vento n.d.':'vento '+wind+' km/h')+'</span>')+'</button>';
+  const level=opportunities[ix]?.level||'unknown';return '<button class="forecast-night-card level-'+level+' '+(ix===offset?'is-selected':'')+'" data-forecast-day="'+ix+'" aria-pressed="'+(ix===offset)+'"><span class="forecast-night-date">'+dt.toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'})+'</span><span class="night-quality">'+(opportunities[ix]?.name||'Previsione incompleta')+'</span><span class="forecast-night-moon"><i style="--moon-lit:'+mi+'%"></i>'+mi+'%</span><b>'+ (cc===null?'Meteo n.d.':'Nuvole '+cc+'%')+'</b><span>'+samples.length+' h di buio · pioggia '+rain+'%</span>'+(target?'<span>'+(best>0?'culmina a '+Math.round(best)+'°':'sotto orizzonte')+'</span>':'<span>'+(wind===null?'vento n.d.':'vento '+wind+' km/h')+'</span>')+'</button>';
  }).join('');
  const mean=avg(clouds);
- return '<section class="forecast-dashboard"><div class="forecast-daybar"><div><span class="forecast-kicker">PREVISIONE LOCALE · '+esc(site.name)+'</span><h2>'+esc(dateLabel)+'</h2><p>'+site.lat.toFixed(2)+'°, '+site.lon.toFixed(2)+'°'+(site.bortle?' · Bortle '+esc(site.bortle):'')+' · Open-Meteo</p></div><div class="forecast-day-actions"><button class="button light small" id="forecast-prev" '+(offset===0?'disabled':'')+'>← Notte prima</button><button class="button light small" id="forecast-next" '+(offset>=7?'disabled':'')+'>Notte dopo →</button></div></div>'+
+ return '<section class="forecast-dashboard"><div class="forecast-highlights"><h3>Le migliori notti previste</h3><div class="opportunities-grid">'+opportunities.filter(n=>n.level==='excellent'||n.level==='good').slice(0,3).map(opportunityHTML).join('')+(opportunities.some(n=>n.level==='excellent'||n.level==='good')?'':'<p>Nessuna finestra chiaramente favorevole nei dati disponibili.</p>')+'</div></div><div class="forecast-daybar"><div><span class="forecast-kicker">PREVISIONE LOCALE · '+esc(site.name)+'</span><h2>'+esc(dateLabel)+'</h2><p>'+site.lat.toFixed(2)+'°, '+site.lon.toFixed(2)+'°'+(site.bortle?' · Bortle '+esc(site.bortle):'')+' · Open-Meteo</p></div><div class="forecast-day-actions"><button class="button light small" id="forecast-prev" '+(offset===0?'disabled':'')+'>← Notte prima</button><button class="button light small" id="forecast-next" '+(offset>=7?'disabled':'')+'>Notte dopo →</button></div></div>'+
  '<div class="forecast-summary"><article class="forecast-summary-main"><span>NOTTE SELEZIONATA</span><strong>'+dark.length+' h</strong><b>buio astronomico</b><small>sole sotto −12° · alba '+sunrise+' · tramonto '+sunset+'</small></article><article><span>LUNA</span><strong>'+illum+'%</strong><b>'+esc(moonPhaseName(moonDate))+'</b><small>illuminazione alle 23:00</small></article><article><span>NUVOLE DURANTE IL BUIO</span><strong>'+(mean===null?'—':mean+'%')+'</strong><b>'+clearish+' h sotto 40%</b><small>media e soglia solo sulle ore buie</small></article><article><span>'+(target?'SOGGETTO · '+esc(target.id):'SOGGETTO')+'</span><strong>'+(target?Math.round(Math.max(-90,...dark.map(e=>e.p?.alt??-90)))+'°':'—')+'</strong><b>'+(target?esc(target.name):'Nessuno selezionato')+'</b><small>'+(target?'altezza massima nelle ore buie':'scegli un target per aggiungere la sua traccia')+'</small></article></div>'+
  '<section class="forecast-panel"><div class="forecast-panel-head"><div><span class="forecast-kicker">ORA PER ORA · 24 ORE</span><h3>Condizioni sopra il sito</h3><p>La copertura nuvolosa è quella prevista sulla località, non lungo la linea di vista del telescopio.</p></div><label class="forecast-toggle"><input type="checkbox" id="forecast-dark-only" '+(window._forecastDarkOnly?'checked':'')+'><span>Solo ore astronomiche</span></label></div><div class="forecast-table-scroll"><table class="forecast-matrix"><thead><tr><th>Ora locale</th>'+hourHead+'</tr></thead><tbody>'+rows.map(([name,cells])=>'<tr><th>'+name+'</th>'+cells+'</tr>').join('')+'</tbody></table></div><div class="forecast-legend"><span><i class="legend-cloud-low"></i> nuvole contenute</span><span><i class="legend-cloud-high"></i> nuvole estese</span><span><i class="legend-dark"></i> sole sotto −12°</span><span>'+(target?'Traccia target: '+esc(target.name):'Valori orari disponibili tramite Open-Meteo')+'</span></div></section>'+
  '<section class="forecast-panel forecast-week"><div class="forecast-panel-head"><div><span class="forecast-kicker">SETTIMANA</span><h3>Le prossime sette notti</h3><p>Seleziona una notte per portare ora per ora al giorno scelto.</p></div><button class="text-button" data-go="calendar">Calendario lunare →</button></div><div class="forecast-week-grid">'+cards+'</div></section><p class="forecast-disclaimer">Open-Meteo fornisce previsioni meteo locali. OurSky calcola buio astronomico, fase lunare e altezza del soggetto dalle coordinate del sito. Non sono stime di seeing o trasparenza atmosferica.</p></section>';
@@ -394,10 +456,10 @@ function bindPage(){
 }
 function appendCatalogPage(){
  const list=window._filteredCatalog||[],site=state.sites.find(x=>x.id===state.activeSite)||defaultSite;
- const start=catalogPage*36;if(start>=list.length)return;
- $('#target-grid')?.insertAdjacentHTML('beforeend',targetCards(list.slice(start,start+36),site));catalogPage++;
+ const start=catalogPage*12;if(start>=list.length)return;
+ $('#target-grid')?.insertAdjacentHTML('beforeend',targetCards(list.slice(start,start+12),site));catalogPage++;
  const remain=Math.max(0,list.length-catalogPage*36);
- const box=$('#catalog-more');if(box)box.innerHTML=remain?`<span>${remain.toLocaleString('it-IT')} altri risultati</span><button class="button light" id="load-more">Carica altri 36</button><div class="scroll-sentinel" aria-hidden="true"></div>`:'<span>Fine risultati</span>';
+ const box=$('#catalog-more');if(box)box.innerHTML=remain?`<span>${remain.toLocaleString('it-IT')} altri risultati</span><button class="button light" id="load-more">Carica altri 12</button><div class="scroll-sentinel" aria-hidden="true"></div>`:'<span>Fine risultati</span>';
  $('#load-more')?.addEventListener('click',appendCatalogPage);$$('[data-detail]').forEach(el=>el.onclick=()=>openDetail(el.dataset.detail));
  if(box&&remain&&'IntersectionObserver'in window){window._catalogObserver?.disconnect();window._catalogObserver=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting))appendCatalogPage()},{rootMargin:'500px'});const sentinel=$('.scroll-sentinel',box);if(sentinel)window._catalogObserver.observe(sentinel)}
 }
@@ -425,8 +487,8 @@ function filterCatalog(){
  window._filteredCatalog=list;const count=$('#filter-count');if(count)count.textContent=`${list.length.toLocaleString('it-IT')} risultati`;
  const active=[];if(terms.length)active.push(['Ricerca: '+query,'search']);for(const t of types)active.push([({nebulose:'Nebulose',galassie:'Galassie',ammassi:'Ammassi',planetarie:'Planetarie',resti:'Resti di supernova'})[t]||t,'type',t]);for(const c of cats)active.push([({M:'Messier',NGC:'NGC',IC:'IC',C:'Caldwell',SH2:'Sharpless',B:'Barnard',LDN:'LDN',LBN:'LBN',Other:'Altri'})[c]||c,'catalog',c]);for(const n of neb)active.push([({emission:'Emissione',reflection:'Riflessione',dark:'Oscure',planetary:'Planetarie',snr:'Resti di supernova'})[n]||n,'nebula',n]);if(framing!=='Tutte')active.push([({fit:'Intero soggetto',compose:'Buona composizione',small:'Compatto nel campo',mosaic:'A mosaico / dettaglio'})[framing]||framing,'frame']);if(season==='Stagione')active.push(['In stagione','season']);if(collection!=='all')active.push([collection==='saved'?'Nella raccolta':'Da scoprire','collection']);if(constellation!=='Tutte')active.push([constellation,'const']);if(minAlt)active.push([`Culmina oltre ${minAlt}°`,'alt']);if(minSize)active.push([`Estensione ≥ ${minSize>=60?(minSize/60)+'°':minSize+'′'}`,'size']);
  const activeBox=$('#active-filters');if(activeBox)activeBox.innerHTML=active.map(([label,key,value])=>`<button class="active-filter" data-remove-filter="${key}" ${value?`data-remove-value="${value}"`:''}>${esc(label)} <span>×</span></button>`).join('');const clear=$('#clear-filters');if(clear)clear.hidden=!active.length;
- const grid=$('#target-grid');if(grid)grid.innerHTML=targetCards(list.slice(0,36),site);
- catalogPage=1;const remain=list.length-36,box=$('#catalog-more');if(box)box.innerHTML=remain>0?`<span>${remain.toLocaleString('it-IT')} altri risultati</span><button class="button light" id="load-more">Carica altri 36</button><div class="scroll-sentinel" aria-hidden="true"></div>`:'<span>Risultati caricati</span>';
+ const grid=$('#target-grid');if(grid)grid.innerHTML=targetCards(list.slice(0,12),site);
+ catalogPage=1;const remain=list.length-12,box=$('#catalog-more');if(box)box.innerHTML=remain>0?`<span>${remain.toLocaleString('it-IT')} altri risultati</span><button class="button light" id="load-more">Carica altri 36</button><div class="scroll-sentinel" aria-hidden="true"></div>`:'<span>Risultati caricati</span>';
  $('#load-more')?.addEventListener('click',appendCatalogPage);if(box&&remain&&'IntersectionObserver'in window){window._catalogObserver?.disconnect();window._catalogObserver=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting))appendCatalogPage()},{rootMargin:'500px'});const sentinel=$('.scroll-sentinel',box);if(sentinel)window._catalogObserver.observe(sentinel)}
  $$('[data-detail]').forEach(el=>el.onclick=()=>openDetail(el.dataset.detail));
 }
@@ -518,7 +580,7 @@ async function loadWeather(force=false){
  if(weatherCache&&!force&&weatherCache.site===s.id){
   target.innerHTML=page==='forecast'?forecastPageHTML(weatherCache.data):weatherHTML(weatherCache.data,page==='home');
   if(page==='forecast')bindPage();
-  if(page==='home')applyHomeSolarTimes(weatherCache.data);
+  if(page==='home'){applyHomeSolarTimes(weatherCache.data);updateHomeOpportunities(weatherCache.data)}
   return;
  }
  try{
@@ -530,11 +592,11 @@ async function loadWeather(force=false){
   target=page==='home'?$('#weather-snippet'):page==='forecast'?$('#forecast-content'):$('#weather-full');
   if(target)target.innerHTML=page==='forecast'?forecastPageHTML(data):weatherHTML(data,page==='home');
   if(page==='forecast'&&target)bindPage();
-  if(page==='home')applyHomeSolarTimes(data);
+  if(page==='home'){applyHomeSolarTimes(data);updateHomeOpportunities(data)}
   if(page==='sites'&&Number.isFinite(data.elevation))render();
  }catch{
   target=page==='home'?$('#weather-snippet'):page==='forecast'?$('#forecast-content'):$('#weather-full');
-  if(target)target.innerHTML='<div class="empty">Previsioni non raggiungibili ora. Controlla la connessione o apri Open-Meteo.</div>';
+  if(target)target.innerHTML='<div class="empty">Previsioni non raggiungibili ora. Controlla la connessione o apri Open-Meteo.</div>';if(page==='home'&&$('#home-opportunities'))$('#home-opportunities').innerHTML='<p class="opportunity-unavailable">Impossibile valutare le prossime notti: previsioni non disponibili.</p>';
  }
 }
 function applyHomeSolarTimes(d){
