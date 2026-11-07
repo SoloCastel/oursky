@@ -302,7 +302,7 @@ function opportunityHTML(n){
 }
 function homeOpportunitiesHTML(data){
  const site=state.sites.find(s=>s.id===state.activeSite)||defaultSite;
- const nights=nightOpportunities(data,site);
+ const nights=nightOpportunities(data,site).slice(0,8);
  const favorable=nights.filter(n=>n.level==='excellent'||n.level==='good');
  const selected=[...favorable.slice(0,3),...nights.filter(n=>!favorable.includes(n)).slice(0,Math.max(0,3-favorable.length))].slice(0,3);
  return `<div class="opportunities-head"><div><span class="home-kicker">FINESTRE PER ASTROFOTOGRAFIA</span><h2>Le prossime notti</h2></div><span>Previsioni orarie Open-Meteo · ${esc(site.name)}</span></div><div class="opportunities-grid">${selected.map(opportunityHTML).join('')}</div>`;
@@ -335,7 +335,7 @@ function forecastPageHTML(data){
  if(target)rows.push(['Altezza · '+esc(target.name),shownEntries.map(e=>'<td class="forecast-target '+(e.dark?'is-dark-hour':'')+'">'+(e.p.alt>0?Math.round(e.p.alt)+'°':'sotto orizz.')+'</td>').join('')]);
  const dateLabel=day.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
  const sunrise=dayIndex>=0?time(data.daily.sunrise?.[dayIndex]):'—',sunset=dayIndex>=0?time(data.daily.sunset?.[dayIndex]):'—';
- const opportunities=nightOpportunities(data,site);
+ const opportunities=nightOpportunities(data,site).slice(0,8);
  const cards=Array.from({length:7},(_,n)=>{
   const ix=offset+n,dt=new Date(day);dt.setDate(dt.getDate()+n);const samples=[];
   for(let k=0;k<=13;k++){const x=new Date(dt);x.setHours(18+k,0,0,0);if(!forecastDark(x,site))continue;const j=h.time.findIndex(t=>t.slice(0,13)===localHourKey(x));if(j>=0)samples.push({j,x,alt:target?altAz(target.ra,target.dec,site.lat,site.lon,x).alt:null})}
