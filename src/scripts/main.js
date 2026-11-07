@@ -214,7 +214,7 @@ function renderCatalog(){
 function targetCards(list,site){return list.map(o=>catalogRow(o,site)).join('')||'<div class="empty">Nessun risultato. Rimuovi un filtro o prova un altro nome.</div>'}
 function catalogRow(o,site){
  const ids=[...new Set([o.id,...(o.catalogs||[]),...(o.aliases||[])])].filter(a=>normalizeAlias(a)!==normalizeAlias(o.name));
- const common=[...new Set((o.commonNames||[]).filter(n=>! /^(?:M|NGC|IC|SH2|LDN|LBN|B|C|UGC|PGC|ESO|PK|ABELL)\\s*[- ]?\\d/i.test(n)))];
+ const common=[...new Set((o.commonNames||[]).filter(n=>! /^(?:M|NGC|IC|SH2|LDN|LBN|B|C|UGC|PGC|ESO|PK|ABELL)\s*[- ]?\d/i.test(n)))];
  const title=common[0]||o.name,frame=frameClass(o),transit=transitInfo(o,site);
  const extent=sizeLabel(o),mag=magLabel(o),image=surveyUrl(o,null,320,240);
  return `<button class="catalog-row catalog-visual" data-detail="${esc(o.id)}" aria-label="Apri scheda ${esc(title)}">
