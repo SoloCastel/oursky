@@ -1,0 +1,24 @@
+/* OurSky UX — catalogo visuale, risposte scientifiche leggibili */
+.catalog-columns{display:none!important}
+.target-list{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;align-items:stretch}
+.catalog-row.catalog-visual{display:grid!important;grid-template-columns:126px minmax(0,1fr) auto!important;grid-template-rows:auto auto;gap:0 14px;min-height:164px;width:100%;padding:12px!important;align-items:start;text-align:left;border:1px solid #34413f;border-radius:10px;background:#172024;color:#e9ece7;transition:background .15s,border-color .15s}
+.catalog-row.catalog-visual:hover{background:#223035;border-color:#c4a17a;transform:none}
+.catalog-visual .catalog-image{grid-column:1;grid-row:1 / 3;position:relative;display:block;width:126px;height:140px;overflow:hidden;background:#0d151b;border-radius:6px}
+.catalog-visual .catalog-image img{width:100%;height:100%;display:block;object-fit:cover}
+.catalog-visual .catalog-image.no-image:before{content:"Immagine non disponibile";display:flex;height:100%;align-items:center;justify-content:center;padding:10px;text-align:center;font-size:10px;color:#84999c}
+.catalog-visual .catalog-image small{position:absolute;bottom:5px;left:5px;background:#0b141cba;color:#cdd7d7;padding:3px 5px;font-size:8px;letter-spacing:.06em}
+.catalog-visual .catalog-object{grid-column:2 / 4;grid-row:1;display:flex;flex-direction:column;gap:5px;min-width:0}
+.catalog-visual .catalog-object strong{font-size:16px;line-height:1.15;letter-spacing:-.03em;overflow-wrap:anywhere}
+.catalog-visual .catalog-object small{color:#b2c3c4;font-size:10px}
+.catalog-visual .catalog-kind{color:#d6b58e;font-size:10px;line-height:1.3}
+.catalog-visual .catalog-size{grid-column:2;grid-row:2;display:flex;flex-direction:column;gap:4px;align-self:end}
+.catalog-visual .catalog-size b{font-size:17px;color:#fff;line-height:1}
+.catalog-visual .catalog-size small{font-size:9px;color:#a9b7b9}
+.catalog-visual .catalog-alt{grid-column:3;grid-row:2;display:flex;flex-direction:column;gap:4px;align-self:end;text-align:right}
+.catalog-visual .catalog-alt b{font-size:15px;color:#eacda2}
+.catalog-visual .catalog-alt small{font-size:9px;color:#b3bdbb}
+.catalog-visual .catalog-frame{grid-column:2 / 4;grid-row:3;width:fit-content;margin-top:10px;font-size:10px;padding:5px 8px;border-radius:5px;background:#31413e;color:#dce5d8}
+.catalog-visual .row-arrow{position:absolute;right:13px;top:12px;color:#cfb08c}
+.catalog-visual{position:relative}
+@media(max-width:1200px){.target-list{grid-template-columns:1fr}}
+@media(max-width:680px){.catalog-row.catalog-visual{grid-template-columns:98px minmax(0,1fr) auto!important;gap:0 10px;min-height:144px;padding:9px!important}.catalog-visual .catalog-image{width:98px;height:123px}.catalog-visual .catalog-object strong{font-size:14px}.catalog-visual .catalog-alt{grid-column:2 / 4;grid-row:3;align-self:start;text-align:left;margin-top:8px}.catalog-visual .catalog-alt small{display:inline}.catalog-visual .catalog-frame{grid-column:2 / 4;grid-row:4;margin-top:7px}.catalog-visual .catalog-size{grid-column:2 / 4;grid-row:2;align-self:start;margin-top:8px}.catalog-visual .catalog-size small{display:inline}.catalog-visual .row-arrow{right:9px;top:7px}}
