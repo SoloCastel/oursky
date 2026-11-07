@@ -367,8 +367,8 @@ function drawSkyChart(){const canvas=$('#sky-canvas');if(!canvas||!skyData)retur
 const project=(a,z)=>{const ar=rad(a),zr=rad(z),v=[Math.cos(zr)*Math.sin(ar),Math.cos(zr)*Math.cos(ar),Math.sin(zr)],den=v[0]*cv[0]+v[1]*cv[1]+v[2]*cv[2];if(den<=0)return null;return {x:midX+(v[0]*right[0]+v[1]*right[1]+v[2]*right[2])/den/scale*W/2,y:midY-(v[0]*up[0]+v[1]*up[1]+v[2]*up[2])/den/(scale/aspect)*H/2}};c.fillStyle='#08121b';c.fillRect(0,0,W,H);const grad=c.createLinearGradient(0,0,0,H);grad.addColorStop(0,'#0b1924');grad.addColorStop(1,'#10212a');c.fillStyle=grad;c.fillRect(0,0,W,H);
 // Equatorial grid: right ascension (J2000) and declination.
 // Coordinates are projected on the local sky at the selected date and observer site.
-if(skyShowGrid){c.lineWidth=1;c.strokeStyle='rgba(151,190,208,.20)';
 const eqPoint=(ra,decl)=>{const hz=altAz(ra,decl,site.lat,site.lon,date);return hz.alt>=0?project(hz.az,hz.alt):null};
+if(skyShowGrid){c.lineWidth=1;c.strokeStyle='rgba(151,190,208,.20)';
 const drawEqLine=(coords)=>{c.beginPath();let active=false;for(const [ra,decl] of coords){const p=eqPoint(ra,decl);if(!p||Math.abs(p.x-midX)>W*2||Math.abs(p.y-midY)>H*2){active=false;continue}if(!active){c.moveTo(p.x,p.y);active=true}else c.lineTo(p.x,p.y)}c.stroke()};
 for(let decl=-75;decl<=75;decl+=15){drawEqLine(Array.from({length:181},(_,i)=>[i*2,decl]));}
 for(let rah=0;rah<24;rah+=2){drawEqLine(Array.from({length:171},(_,i)=>[rah*15,-85+i]));}
