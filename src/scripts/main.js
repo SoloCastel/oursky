@@ -184,14 +184,14 @@ function surveyUrl(o,frame=null,width=640,height=420){
 // If all image services fail, a live Aladin tile viewer is used for visible cards.
 function surveyFallback(img){
  const attempt=Number(img.dataset.retry||0);
- if(attempt===0){img.dataset.retry='1';img.src=img.dataset.cds;return}
- if(attempt===1){img.dataset.retry='2';img.src=img.dataset.cds.replace('alasky.cds.unistra.fr','alaskybis.cds.unistra.fr');return}
- img.hidden=true;
- const holder=img.parentElement;
- if(!holder)return;
+ if(img.dataset.editorial==='1'&&attempt===0){img.dataset.retry='1';img.src=img.dataset.proxy;return}
+ if(attempt<=1){img.dataset.retry='2';img.src=img.dataset.cds;return}
+ if(attempt===2){img.dataset.retry='3';img.src=img.dataset.cds.replace('alasky.cds.unistra.fr','alaskybis.cds.unistra.fr');return}
+ img.hidden=true;const holder=img.parentElement;if(!holder)return;
  holder.classList.add('no-image');
- const note=document.createElement('span');note.className='survey-unavailable';note.textContent='Preview non disponibile';holder.appendChild(note);
- if(img.dataset.preview==='detail')initAladinPreview(holder,img);else if(img.dataset.preview==='card')scheduleAladinCard(holder,img);
+ if(!holder.querySelector('.survey-unavailable')){const note=document.createElement('span');note.className='survey-unavailable';note.textContent='Anteprima non raggiungibile';holder.appendChild(note)}
+ if(img.dataset.preview==='detail')initAladinPreview(holder,img);
+ else if(img.dataset.preview==='card')scheduleAladinCard(holder,img);
 }
 let aladinCardInFlight=0,aladinWidgetSeq=0;
 function scheduleAladinCard(holder,img){
@@ -225,11 +225,13 @@ async function initAladinPreview(holder,img){
   const label=holder.querySelector('.survey-unavailable');if(label)label.remove();
  }catch(err){console.warn('Anteprima HiPS non disponibile:',err)}
 }
+const editorialPhotos={"M42":"Orion_Nebula_(M42).jpg","M31":"The_Andromeda_Galaxy_M31.jpg","NGC7635":"The_Bubble_Nebula_-_NGC_7635_-_Heic1608a.jpg","Sh2-157":"SH2-157_Lobster_Claw_crop.jpg","NGC7000":"North_America_Nebula_NGC_7000.jpg","NGC1499":"California-nebula.jpeg"};
+function editorialPhoto(o){const f=editorialPhotos[o.id];return f?'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(f)+'?width=640':null}
+function watchPreviewImages(root){if(!root)return;root.querySelectorAll('img[data-preview]:not([data-watched])').forEach(img=>{img.dataset.watched='1';setTimeout(()=>{if(img.isConnected&&!img.complete)surveyFallback(img)},7500)})}
 function surveyImage(o,frame=null,width=480,height=320,mode='card'){
- const u=surveyUrl(o,frame,width,height);
- const fallback='/api/survey?'+new URL(u).searchParams.toString();
+ const u=surveyUrl(o,frame,width,height),photo=mode==='card'?editorialPhoto(o):null,proxy='/api/survey?'+new URL(u).searchParams.toString();
  const fov=frame?Math.max(frame.w,frame.h):Math.max(.18,Math.min(6,(Number.isFinite(o.size)?o.size:20)/60*1.65));
- return '<img loading="lazy" decoding="async" src="'+fallback+'" data-cds="'+u+'" data-ra="'+o.ra+'" data-dec="'+o.dec+'" data-fov="'+fov+'" data-preview="'+mode+'" alt="Rilievo DSS2 di '+esc(o.name)+'" onerror="surveyFallback(this)">';
+ return '<img loading="lazy" decoding="async" src="'+(photo||proxy)+'" data-cds="'+u+'" data-proxy="'+proxy+'" data-editorial="'+(photo?'1':'0')+'" data-ra="'+o.ra+'" data-dec="'+o.dec+'" data-fov="'+fov+'" data-preview="'+mode+'" alt="'+esc(o.name)+'" onerror="surveyFallback(this)">';
 }
 function surveyFigure(o,frame=null,extra=''){
  const fov=frame?Math.max(frame.w,frame.h):Math.max(.18,Math.min(6,(Number.isFinite(o.size)?o.size:20)/60*1.65));
@@ -274,7 +276,7 @@ function catalogRow(o,site){
  const title=common[0]||o.name,frame=frameClass(o),transit=transitInfo(o,site);
  const extent=sizeLabel(o),mag=magLabel(o),image=surveyImage(o,null,320,240,'card');
  return `<button class="catalog-row catalog-visual" data-detail="${esc(o.id)}" aria-label="Apri scheda ${esc(title)}">
- <span class="catalog-image">${image}<small>DSS2 · SURVEY</small></span>
+ <span class="catalog-image">${image}<small>${editorialPhoto(o)?"FOTO ASTRONOMICA":"DSS2 · SURVEY"}</small></span>
  <span class="catalog-object"><strong>${esc(title)}</strong><small>${esc(ids.slice(0,4).join(' · '))}</small><span class="catalog-kind">${esc(o.subtype||o.type)} · ${esc(o.const)}</span></span>
  <span class="catalog-size"><b>${extent}</b><small>dimensione angolare</small><small>mag ${mag}</small></span>
  <span class="catalog-alt"><b>${transit.alt.toFixed(0)}°</b><small>culminazione ${transit.time.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}</small><small>${azLabel(transit.az)}</small></span>
@@ -604,12 +606,12 @@ function bindPage(){
  $$('[data-project]').forEach(el=>el.onclick=()=>openProject(el.dataset.project));
  if(page==='catalog'){syncCatalogChips();filterCatalog();if(window.innerWidth>680)$('#catalog-search')?.focus({preventScroll:true})}
  if(page==='sites')initSiteMap();if(page==='sky')initSkyChart();
- if(page==='home'||page==='sites')loadWeather();
+ if(page==='home'||page==='sites')loadWeather();watchPreviewImages($('#view'));
 }
 function appendCatalogPage(){
  const list=window._filteredCatalog||[],site=state.sites.find(x=>x.id===state.activeSite)||defaultSite;
  const start=catalogPage*12;if(start>=list.length)return;
- $('#target-grid')?.insertAdjacentHTML('beforeend',targetCards(list.slice(start,start+12),site));catalogPage++;
+ $('#target-grid')?.insertAdjacentHTML('beforeend',targetCards(list.slice(start,start+12),site));watchPreviewImages($('#target-grid'));catalogPage++;
  const remain=Math.max(0,list.length-catalogPage*36);
  const box=$('#catalog-more');if(box)box.innerHTML=remain?`<span>${remain.toLocaleString('it-IT')} altri risultati</span><button class="button light" id="load-more">Carica altri 12</button><div class="scroll-sentinel" aria-hidden="true"></div>`:'<span>Fine risultati</span>';
  $('#load-more')?.addEventListener('click',appendCatalogPage);$$('[data-detail]').forEach(el=>el.onclick=()=>openDetail(el.dataset.detail));
@@ -639,7 +641,7 @@ function filterCatalog(){
  window._filteredCatalog=list;const count=$('#filter-count');if(count)count.textContent=`${list.length.toLocaleString('it-IT')} risultati`;
  const active=[];if(terms.length)active.push(['Ricerca: '+query,'search']);for(const t of types)active.push([({nebulose:'Nebulose',galassie:'Galassie',ammassi:'Ammassi',planetarie:'Planetarie',resti:'Resti di supernova'})[t]||t,'type',t]);for(const c of cats)active.push([({M:'Messier',NGC:'NGC',IC:'IC',C:'Caldwell',SH2:'Sharpless',B:'Barnard',LDN:'LDN',LBN:'LBN',Other:'Altri'})[c]||c,'catalog',c]);for(const n of neb)active.push([({emission:'Emissione',reflection:'Riflessione',dark:'Oscure',planetary:'Planetarie',snr:'Resti di supernova'})[n]||n,'nebula',n]);if(framing!=='Tutte')active.push([({fit:'Intero soggetto',compose:'Buona composizione',small:'Compatto nel campo',mosaic:'A mosaico / dettaglio'})[framing]||framing,'frame']);if(season==='Stagione')active.push(['In stagione','season']);if(collection!=='all')active.push([collection==='saved'?'Nella raccolta':'Da scoprire','collection']);if(constellation!=='Tutte')active.push([constellation,'const']);if(minAlt)active.push([`Culmina oltre ${minAlt}°`,'alt']);if(minSize)active.push([`Estensione ≥ ${minSize>=60?(minSize/60)+'°':minSize+'′'}`,'size']);
  const activeBox=$('#active-filters');if(activeBox)activeBox.innerHTML=active.map(([label,key,value])=>`<button class="active-filter" data-remove-filter="${key}" ${value?`data-remove-value="${value}"`:''}>${esc(label)} <span>×</span></button>`).join('');const clear=$('#clear-filters');if(clear)clear.hidden=!active.length;
- const grid=$('#target-grid');if(grid)grid.innerHTML=targetCards(list.slice(0,12),site);
+ const grid=$('#target-grid');if(grid){grid.innerHTML=targetCards(list.slice(0,12),site);watchPreviewImages(grid)}
  catalogPage=1;const remain=list.length-12,box=$('#catalog-more');if(box)box.innerHTML=remain>0?`<span>${remain.toLocaleString('it-IT')} altri risultati</span><button class="button light" id="load-more">Carica altri 36</button><div class="scroll-sentinel" aria-hidden="true"></div>`:'<span>Risultati caricati</span>';
  $('#load-more')?.addEventListener('click',appendCatalogPage);if(box&&remain&&'IntersectionObserver'in window){window._catalogObserver?.disconnect();window._catalogObserver=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting))appendCatalogPage()},{rootMargin:'500px'});const sentinel=$('.scroll-sentinel',box);if(sentinel)window._catalogObserver.observe(sentinel)}
  $$('[data-detail]').forEach(el=>el.onclick=()=>openDetail(el.dataset.detail));
@@ -701,7 +703,7 @@ function openDetail(id){
  '<section class="detail-window-section"><div class="detail-section-head"><div><span class="eyebrow">PIANIFICA</span><h3>Prossime finestre utili</h3><p>Notte buia, altezza del target e luna. Il meteo compare quando è disponibile per il sito.</p></div><button class="text-button" id="detail-calendar">Calendario completo ↗</button></div>'+detailNightTable(o,site)+'</section>'+
  '<section class="detail-story-section"><div class="detail-section-head"><div><span class="eyebrow">OLTRE L’IMMAGINE</span><h3>Scienza, storia e contesto</h3></div></div><div class="detail-story-grid"><article class="detail-story-card"><span>SCIENZA</span><p>'+esc(o.science||'Per dati astrofisici verificati apri la scheda dell’oggetto in SIMBAD.')+'</p></article><article class="detail-story-card"><span>STORIA E CATALOGHI</span><p>'+esc(o.culture||'Identificativi registrati: '+aliases.join(', ')+'.')+'</p></article><article class="detail-story-card"><span>NOTE DI RIPRESA</span><p>'+esc(o.story||'Le dimensioni e la magnitudine riportate sono riferimenti di catalogo. L’aspetto dipende dalla banda, dalla luminosità superficiale e dal cielo.')+'</p></article></div></section>'+
  '<div class="detail-bottom-actions"><div><a class="button light small" target="_blank" rel="noreferrer" href="https://simbad.cds.unistra.fr/simbad/sim-id?Ident='+encodeURIComponent(o.id)+'">SIMBAD ↗</a><a class="button light small" target="_blank" rel="noreferrer" href="https://aladin.cds.unistra.fr/AladinLite/?target='+encodeURIComponent(o.ra+' '+o.dec)+'&fov='+(f?Math.max(f.w,f.h):1)+'">Aladin · survey e cataloghi ↗</a><button class="button light small" id="open-sky-target">Apri nel planetario</button></div><div><button class="button light" id="save-target">'+(saved?'Rimuovi dalla raccolta':'Aggiungi alla raccolta')+'</button><button class="button" id="make-project">Crea progetto</button></div></div><p class="detail-source">Cataloghi e coordinate OpenNGC · CC BY-SA 4.0 · immagini DSS2 color via CDS HiPS2FITS. Meteo: Open-Meteo. Dati di catalogo e condizioni previste sono mostrati separatamente.</p></div>';
- $('#detail-dialog').showModal();
+ $('#detail-dialog').showModal();watchPreviewImages($('#detail-dialog'));
  $('[data-close]')?.addEventListener('click',()=>$('#detail-dialog').close());
  $('#save-target').onclick=()=>{if(!state.collection.includes(id))state.collection.push(id);else state.collection=state.collection.filter(x=>x!==id);save();openDetail(id);toast(state.collection.includes(id)?'Aggiunto alla raccolta':'Rimosso dalla raccolta')};
  $('#detail-gear')?.addEventListener('click',()=>{$('#detail-dialog').close();go('gear')});
