@@ -686,9 +686,11 @@ function filterAdvice(o){
  return '<div class="filter-advice"><div class="filter-chips">'+suggested.map(s=>'<span class="filter-badge">'+esc(s)+'</span>').join('')+'</div><p>'+(matched.length?'Nel tuo setup: <b>'+matched.map(g=>esc(g.name)).join(', ')+'</b>. Controlla compatibilità e banda passante con il soggetto.':'Nel setup registrato non trovo un filtro corrispondente. Puoi confrontare la resa broadband e quella filtrata nelle immagini della community.')+'</p><small>Indicazione di catalogo per tipologia; non sostituisce la risposta spettrale del filtro né il confronto con immagini reali.</small></div>';
 }
 function detailFrameFigure(o,f){
- if(!f)return surveyFigure(o,null,'detail-survey');
+ const photo=editorialPhoto(o);
+ const photoBox=photo?'<figure class="detail-editorial-photo"><img src="'+photo+'" alt="Fotografia reale di '+esc(o.name)+'" loading="eager" onerror="this.parentElement.hidden=true"><figcaption>FOTOGRAFIA ASTRONOMICA · Wikimedia Commons · non utilizzabile come plate solving <a href="https://commons.wikimedia.org/wiki/File:'+encodeURIComponent(editorialPhotos[o.id])+'" target="_blank" rel="noreferrer">Fonte e licenza ↗</a></figcaption></figure>':'';
+ if(!f)return '<div class="detail-media-stack">'+photoBox+surveyFigure(o,null,'detail-survey')+'</div>';
  const wide={...f,w:f.w*2.2,h:f.h*2.2};
- return '<div class="detail-frame-visual">'+surveyFigure(o,wide,'detail-survey detail-survey-wide')+'<div class="sensor-frame-overlay" style="--frame-w:45.45%;--frame-h:45.45%" aria-label="Rettangolo dell’inquadratura del setup"></div><div class="frame-caption">AREA DI RIPRESA · '+f.w.toFixed(2)+'° × '+f.h.toFixed(2)+'°</div></div>';
+ return '<div class="detail-media-stack">'+photoBox+'<div class="detail-frame-visual">'+surveyFigure(o,wide,'detail-survey detail-survey-wide')+'<div class="sensor-frame-overlay" style="--frame-w:45.45%;--frame-h:45.45%" aria-label="Rettangolo dell’inquadratura del setup"></div><div class="frame-caption">AREA DI RIPRESA · '+f.w.toFixed(2)+'° × '+f.h.toFixed(2)+'° · SURVEY CALIBRATA</div></div></div>';
 }
 function openDetail(id){
  const o=catalog.find(x=>x.id===id);if(!o)return;
